@@ -1,0 +1,221 @@
+#layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#layout main {
+  flex: 1 1 0%;
+  display: block;
+  overflow: auto;
+}
+
+.basic-page {
+  padding: 1rem;
+  max-width: 1024px;
+  margin: auto;
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+}
+
+.title.logo {
+  perspective: 150px;
+  position: relative;
+  font-size: 40px;
+}
+
+.title.logo a {
+  transform-style: preserve-3d;
+  transform: rotateX(45deg);
+  color: rgba(255, 127, 43, 0.1);
+  padding: 0;
+  font-weight: 500;
+}
+
+.shine-text {
+  background-color: rgb(var(--bg-color-2nd));
+  background: linear-gradient(
+      105deg,
+      rgb(var(--active-color)) 45%,
+      rgb(var(--text-color)) 50%,
+      rgb(var(--active-color)) 55%
+    )
+    0 0 no-repeat;
+  background-size: 800px;
+  background-clip: text;
+  animation-name: shine;
+  animation-duration: 8s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shine {
+  0%,
+  20% {
+    background-position: 100%;
+  }
+  80%,
+  100% {
+    background-position: 0%;
+  }
+}
+
+.basic-page p {
+  text-align: justify;
+}
+
+#home.basic-page p {
+  text-align: center;
+}
+
+.page-title {
+  font-size: 1.55rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+header {
+  background: rgb(var(--bg-color-2nd));
+}
+
+header nav {
+  display: flex;
+  max-width: 1024px;
+  align-items: center;
+  justify-content: space-between;
+  /* gap: 1rem; */
+  margin: auto;
+  /* width: max-content; */
+}
+
+header nav div {
+  display: flex;
+}
+
+header nav a {
+  text-decoration: none;
+  padding: 1rem;
+  color: rgb(var(--text-color));
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+}
+
+header nav a:hover {
+  color: rgb(var(--active-color));
+}
+
+header nav a.active {
+  color: rgb(var(--active-color));
+}
+
+form input,
+form button {
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  background: rgb(var(--bg-color-2nd));
+  box-shadow: inset 1px 1px 3px rgba(var(--shadow-color));
+}
+
+form button {
+  background: rgb(var(--btn-bg));
+  color: rgb(var(--text-color-btn));
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+form input:focus-visible {
+  outline: 1px solid rgb(var(--active-color));
+  border-radius: 3px;
+}
+
+button {
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  background: rgb(var(--active-color));
+  color: rgb(var(--text-color-btn));
+}
+
+button.outlined {
+  border: 1px solid rgb(var(--active-color));
+  background: transparent;
+  color: rgb(var(--active-color));
+}
+
+button:hover {
+  background: rgb(var(--btn-bg-hover));
+}
+
+button.outlined:hover {
+  border: 1px solid rgb(var(--btn-bg-hover));
+  background: transparent;
+  color: rgb(var(--btn-bg-hover));
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(var(--text-color), 0.3);
+  border-style: hidden;
+  overflow: hidden;
+  background: rgb(var(--table-color));
+}
+
+table th,
+table td {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+table thead tr:nth-child(odd),
+table tbody tr:nth-child(even) {
+  background: rgb(var(--table-color-2nd));
+}
+
+table div.action {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: auto;
+  width: fit-content;
+}
+
+img {
+  display: flex;
+  margin: auto;
+}
+
+.submenu {
+  display: flex;
+  position: relative;
+}
+
+.submenu-title {
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+}
+
+.submenu-content {
+  display: none;
+  position: absolute;
+  background: rgb(var(--bg-color-2nd));
+}
+
+.submenu:hover .submenu-content,
+.submenu-content:hover {
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem;
+  top: 100%;
+  left: -1rem;
+}
+
+.submenu:hover .submenu-content a,
+.submenu-content:hover a {
+  white-space: nowrap;
+}

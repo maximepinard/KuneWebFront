@@ -1,0 +1,63 @@
+.fake-title {
+  margin-top: 10px;
+  background: rgb(var(--bg-color-2nd));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 25px;
+  width: 640px;
+  height: 390px;
+  max-width: 640px;
+  max-height: 390px;
+  position: relative;
+}
+
+.fake-title .disc {
+  background: rgb(var(--text-color));
+  border-radius: 50%;
+  width: 310px;
+  height: 310px;
+  border: 1px solid black;
+}
+
+.fake-title .timer {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  width: 310px;
+  height: 310px;
+  z-index: 2;
+  border-radius: 50%;
+  font-size: 120px;
+  text-shadow: 1px 1px 2px rgba(var(--shadow-color));
+  color: rgb(var(--active-color));
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fake-title.guess .disc {
+  animation: spin 4s linear infinite;
+  box-shadow: 5px 0 5px rgb(var(--active-color));
+}
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
