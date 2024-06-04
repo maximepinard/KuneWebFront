@@ -1,0 +1,19 @@
+button.icon {
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border: medium;
+  background: transparent;
+  box-shadow: none !important;
+  padding: 0;
+  color: inherit;
+}
+
+button.icon:hover {
+  background: rgba(var(--btn-bg-hover), 0.5);
+}
+
+button.icon svg {
+  display: flex;
+  margin: auto;
+}
