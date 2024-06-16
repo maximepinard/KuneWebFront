@@ -15,7 +15,7 @@
 }
 
 .fake-title.size-1024 {
-  transform: scale(1.6);
+  zoom: 1.6;
 }
 
 .fake-title .disc {
