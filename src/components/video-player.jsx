@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useYoutubePlayer } from "../hooks/useYoutube";
-import FakeTitle from "./fake-title";
+import { useState, useEffect } from 'react';
+import { useYoutubePlayer } from '../hooks/useYoutube';
+import FakeTitle from './fake-title';
 
-function VideoPlayer({ videos, id = "44723a" }) {
+function VideoPlayer({ videos, id = '44723a' }) {
   const [isReady, setIsReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [lock, setLock] = useState(false);
@@ -12,16 +12,16 @@ function VideoPlayer({ videos, id = "44723a" }) {
 
   const { YoutubePlayer, player } = useYoutubePlayer({
     videoId: id,
-    height: "390",
-    width: "640",
+    height: '390',
+    width: '640',
     events: {
       onReady: () => {
         setIsReady(true);
       },
       onStateChange: (event) => {
         setIsPlaying(event.data === 1);
-      },
-    },
+      }
+    }
   });
 
   useEffect(() => {
@@ -38,9 +38,8 @@ function VideoPlayer({ videos, id = "44723a" }) {
       if (newVideo) {
         player.loadVideoById({
           videoId: newVideo.code,
-          startSeconds:
-            newMode === 0 ? newVideo.startGuess : newVideo.startReveal,
-          endSeconds: newMode === 0 ? newVideo.endGuess : newVideo.endReveal,
+          startSeconds: newMode === 0 ? newVideo.startGuess : newVideo.startReveal,
+          endSeconds: newMode === 0 ? newVideo.endGuess : newVideo.endReveal
         });
       } else {
         setEnd(true);
@@ -51,7 +50,7 @@ function VideoPlayer({ videos, id = "44723a" }) {
       setLock(true);
 
       if (currentIndex > -1) {
-        setTimeout(() => doChange(), mode === 0 ? 900 : 3000);
+        setTimeout(() => doChange(), mode === 0 ? 900 : 1000);
       } else {
         doChange();
       }
@@ -73,38 +72,32 @@ function VideoPlayer({ videos, id = "44723a" }) {
       {mode === 0 && (
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <FakeTitle
-            timer={
-              videos[currentIndex].endGuess -
-              videos[currentIndex].startGuess +
-              1
-            }
-          />
+          <FakeTitle timer={videos[currentIndex].endGuess - videos[currentIndex].startGuess + 1} />
         </div>
       )}
       <div
         style={{
-          position: "relative",
-          overflow: mode === 0 ? "hidden" : "visible",
-          width: mode === 0 ? 0 : "auto",
-          height: mode === 0 ? 0 : "auto",
+          position: 'relative',
+          overflow: mode === 0 ? 'hidden' : 'visible',
+          width: mode === 0 ? 0 : 'auto',
+          height: mode === 0 ? 0 : 'auto'
         }}
       >
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
             opacity: mode ? 1 : 0,
-            position: mode ? "block" : "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
+            position: mode ? 'block' : 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)'
           }}
         >
           <YoutubePlayer />

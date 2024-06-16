@@ -1,20 +1,20 @@
-import { useState, useContext, useEffect } from "react";
-import { toast } from "react-toastify";
-import axiosCustom from "../tools/axiosCustom";
-import { VideoContext } from "../global-context";
-import IconButton from "./icon-button";
-import SelectingVideo from "./select-video";
-import DeleteIcon from "../assets/svg/delete-icon";
-import "../assets/css/edit.css";
-import CustomField from "./CustomField";
+import { useState, useContext, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import axiosCustom from '../tools/axiosCustom';
+import { VideoContext } from '../global-context';
+import IconButton from './icon-button';
+import SelectingVideo from './select-video';
+import DeleteIcon from '../assets/svg/delete-icon';
+import '../assets/css/edit.css';
+import CustomField from './CustomField';
 
 const inputFields = [
   {
-    name: "name",
-    label: "Nom",
-    placeholder: "Nom de la playlist",
-    type: "text",
-  },
+    name: 'name',
+    label: 'Nom',
+    placeholder: 'Nom de la playlist',
+    type: 'text'
+  }
 ];
 
 function EditPlaylist({ playlist, videos, close }) {
@@ -23,13 +23,9 @@ function EditPlaylist({ playlist, videos, close }) {
   const [playlistContent, setPlaylistContent] = useState([]);
   const [lock, setLock] = useState();
 
-  const videosContentIds = playlistContent
-    .filter((c) => c.content_type === "video")
-    .map((c) => c.content_id);
+  const videosContentIds = playlistContent.filter((c) => c.content_type === 'video').map((c) => c.content_id);
 
-  const videosInPlaylist = videos?.filter(
-    (v) => videosContentIds?.includes && videosContentIds?.includes(v.id),
-  );
+  const videosInPlaylist = videos?.filter((v) => videosContentIds?.includes && videosContentIds?.includes(v.id));
 
   useEffect(() => {
     if (playlist?.id) {
@@ -40,8 +36,8 @@ function EditPlaylist({ playlist, videos, close }) {
             res.data?.map &&
               res.data?.map((c) => ({
                 content_id: c.content_id,
-                content_type: c.content_type,
-              })),
+                content_type: c.content_type
+              }))
           );
         })
         .catch((err) => {
@@ -57,22 +53,20 @@ function EditPlaylist({ playlist, videos, close }) {
     }
 
     setLock(true);
-    const toastId = toast.loading("Enregistrement");
+    const toastId = toast.loading('Enregistrement');
     const axiosMethod = (body) =>
-      playlist?.id
-        ? axiosCustom.patch(`/playlists/${playlist.id}`, body)
-        : axiosCustom.post(`/playlists`, body);
+      playlist?.id ? axiosCustom.patch(`/playlists/${playlist.id}`, body) : axiosCustom.post(`/playlists`, body);
     try {
       const res = await axiosMethod({
         ...editPlaylist,
-        playlistContent: playlistContent,
+        playlistContent: playlistContent
       });
       toast.update(toastId, {
-        type: "success",
-        render: "Réussi",
+        type: 'success',
+        render: 'Réussi',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
       if (playlist?.id) {
         const newPlaylists = [...playlists].filter((p) => p.id !== playlist.id);
@@ -85,11 +79,11 @@ function EditPlaylist({ playlist, videos, close }) {
     } catch (error) {
       console.error(error);
       toast.update(toastId, {
-        type: "error",
-        render: "Échoué",
+        type: 'error',
+        render: 'Échoué',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
     } finally {
       setTimeout(() => setLock(false), 500);
@@ -102,11 +96,7 @@ function EditPlaylist({ playlist, videos, close }) {
         {inputFields.map((field, index) => (
           <div key={index}>
             <label htmlFor={field.name}>{field.label}</label>
-            <CustomField
-              field={field}
-              data={editPlaylist}
-              setData={setEditPlaylist}
-            />
+            <CustomField field={field} data={editPlaylist} setData={setEditPlaylist} />
           </div>
         ))}
         <div className="playlist-video-list">
@@ -115,35 +105,18 @@ function EditPlaylist({ playlist, videos, close }) {
               videosInPlaylist.map((v, i) => (
                 <div key={i} className="video-item">
                   <div>
-                    <img
-                      src={`https://img.youtube.com/vi/${v.code}/default.jpg`}
-                    />
+                    <img src={`https://img.youtube.com/vi/${v.code}/default.jpg`} />
                   </div>
                   <div>{`${v.title} - ${v.artist}`}</div>
                   <IconButton
                     icon={<DeleteIcon />}
-                    onClick={() =>
-                      setPlaylistContent(
-                        [...playlistContent].filter(
-                          (c) => c.content_id !== v.id,
-                        ),
-                      )
-                    }
+                    onClick={() => setPlaylistContent([...playlistContent].filter((c) => c.content_id !== v.id))}
                   />
                 </div>
               ))}
             <SelectingVideo
-              videos={
-                videos?.filter
-                  ? videos.filter((v) => !playlistContent?.includes(v.id))
-                  : []
-              }
-              addVideo={(id) =>
-                setPlaylistContent([
-                  ...playlistContent,
-                  { content_id: id, content_type: "video" },
-                ])
-              }
+              videos={videos?.filter ? videos.filter((v) => !videosContentIds?.includes(v.id)) : []}
+              addVideo={(id) => setPlaylistContent([...playlistContent, { content_id: id, content_type: 'video' }])}
             />
           </div>
         </div>

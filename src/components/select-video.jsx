@@ -11,7 +11,14 @@ function SelectingVideo({ videos, addVideo }) {
     image: `https://img.youtube.com/vi/${v.code}/default.jpg`
   }));
 
-  return <SelectCustom options={options} setValue={handleSave} />;
+  return (
+    <SelectCustom
+      options={options}
+      setValue={handleSave}
+      placeholder={'Selectionner une vidéo'}
+      placeHolderNodata={'Aucune vidéo à ajouter'}
+    />
+  );
 }
 
 export default SelectingVideo;

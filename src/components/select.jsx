@@ -21,7 +21,7 @@ const SelectCustom = ({
     <>
       {open && <div className="main-select-bg" onClick={() => setOpen(false)}></div>}
       <div className="main-select">
-        <div className="custom-select-input-wrapper" onClick={() => setOpen(true)}>
+        <div className="custom-select-input-wrapper" onClick={() => filteredOptions.length > 0 && setOpen(true)}>
           <input
             value={option?.label || filter}
             onChange={(e) => setFilter(e.target.value)}
