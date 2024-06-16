@@ -77,7 +77,7 @@ function VideoPlayer({ videos, id = '44723a' }) {
             justifyContent: 'center'
           }}
         >
-          <FakeTitle timer={videos[currentIndex].endGuess - videos[currentIndex].startGuess + 1} />
+          <FakeTitle timer={videos[currentIndex].endGuess - videos[currentIndex].startGuess + 1} size={1024} />
         </div>
       )}
       <div

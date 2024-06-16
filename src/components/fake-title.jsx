@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import '../assets/css/fake-title.css';
 
-function FakeTitle({ title, artist, genre, year, timer = 10 }) {
+function FakeTitle({ title, artist, genre, year, timer = 10, size }) {
   const [localTimer, setLocalTimer] = useState(timer);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ function FakeTitle({ title, artist, genre, year, timer = 10 }) {
   }, [localTimer, timer]);
 
   return (
-    <div className={`fake-title size-1024 ${timer ? 'guess' : ''}`}>
+    <div className={`fake-title size-${size} ${timer ? 'guess' : ''}`}>
       <div className="disc"></div>
       <div className="timer">{localTimer ? localTimer : 0}</div>
       {title && <p>{title}</p>}
