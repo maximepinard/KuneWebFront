@@ -50,7 +50,7 @@ function VideoPlayer({ videos, id = '44723a' }) {
       setLock(true);
 
       if (currentIndex > -1) {
-        setTimeout(() => doChange(), mode === 0 ? 900 : 1000);
+        setTimeout(() => doChange(), mode === 0 ? 400 : 2500);
       } else {
         doChange();
       }
