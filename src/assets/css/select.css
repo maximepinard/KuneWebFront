@@ -42,7 +42,7 @@
   border-radius: 3px;
   display: flex;
   align-items: center;
-  height: 96px;
+  height: 36px;
   padding: 0px;
   position: relative;
   user-select: none;
@@ -51,6 +51,11 @@
   gap: 1rem;
   box-sizing: border-box;
 }
+
+.SelectItem:has(img) {
+  height: 96px;
+}
+
 .SelectItem img {
   max-width: 96px;
   max-height: 96px;

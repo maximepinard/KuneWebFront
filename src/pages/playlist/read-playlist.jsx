@@ -4,11 +4,15 @@ import VideoPlayer from "../../components/video-player";
 import { randomString } from "../../tools/random";
 
 function ReadPlaylist({ playlist, videos, close }) {
-  const [videoIds, setVideosIds] = useState([]);
+  const [playlistContent, setPlaylistContent] = useState([]);
   const randomId = useMemo(() => randomString(10), []);
 
-  const videosPlaylists = videos?.filter(
-    (v) => videoIds?.includes && videoIds?.includes(v.id),
+  const videosContentIds = playlistContent
+    .filter((c) => c.content_type === "video")
+    .map((c) => c.content_id);
+
+  const videosInPlaylist = videos?.filter(
+    (v) => videosContentIds?.includes && videosContentIds?.includes(v.id),
   );
 
   function shuffleArray(array) {
@@ -26,7 +30,13 @@ function ReadPlaylist({ playlist, videos, close }) {
       axiosCustom
         .get(`/playlists/${playlist?.id}`)
         .then((res) => {
-          setVideosIds(res.data?.map && res.data?.map((v) => v.id));
+          setPlaylistContent(
+            res.data?.map &&
+              res.data?.map((c) => ({
+                content_id: c.content_id,
+                content_type: c.content_type,
+              })),
+          );
         })
         .catch((err) => {
           console.error(err);
@@ -36,8 +46,8 @@ function ReadPlaylist({ playlist, videos, close }) {
 
   return (
     <div>
-      {videosPlaylists && videosPlaylists.length > 0 && (
-        <VideoPlayer videos={shuffleArray(videosPlaylists)} id={randomId} />
+      {videosInPlaylist && videosInPlaylist.length > 0 && (
+        <VideoPlayer videos={shuffleArray(videosInPlaylist)} id={randomId} />
       )}
     </div>
   );

@@ -1,42 +1,56 @@
-import { useState, useContext } from "react";
-import { toast } from "react-toastify";
-import axiosCustom from "../tools/axiosCustom";
-import "../assets/css/edit.css";
-import { VideoContext } from "../global-context";
+import { useState, useContext } from 'react';
+import { toast } from 'react-toastify';
+import axiosCustom from '../tools/axiosCustom';
+import '../assets/css/edit.css';
+import { VideoContext } from '../global-context';
+import CustomField from './CustomField';
 
-const inputFields = [
-  { name: "title", label: "Title", placeholder: "Enter title", type: "text" },
+const getInputFields = () => [
+  { name: 'title', label: 'Title', placeholder: 'Entrer titre', type: 'text' },
   {
-    name: "artist",
-    label: "Artist",
-    placeholder: "Enter artist",
-    type: "text",
+    name: 'artist',
+    label: 'Artist',
+    placeholder: `Nom de l'artist`,
+    type: 'text'
   },
-  { name: "code", label: "Code", placeholder: "Enter code", type: "text" },
+  { name: 'code', label: 'Code', placeholder: 'Entrer code', type: 'text' },
   {
-    name: "startGuess",
-    label: "Start Guess",
-    placeholder: "Enter start guess",
-    type: "number",
-  },
-  {
-    name: "endGuess",
-    label: "End Guess",
-    placeholder: "Enter end guess",
-    type: "number",
+    name: 'date',
+    label: 'Date',
+    placeholder: 'Date du média',
+    type: 'date'
   },
   {
-    name: "startReveal",
-    label: "Start Reveal",
-    placeholder: "Enter start reveal",
-    type: "number",
+    name: 'startGuess',
+    label: 'De',
+    placeholder: 'Timestamp en s',
+    type: 'number'
   },
   {
-    name: "endReveal",
-    label: "End Reveal",
-    placeholder: "Enter end reveal",
-    type: "number",
+    name: 'endGuess',
+    label: 'À',
+    placeholder: 'Timestamp en s',
+    type: 'number'
   },
+  {
+    name: 'startReveal',
+    label: 'De',
+    placeholder: 'Timestamp en s',
+    type: 'number'
+  },
+  {
+    name: 'endReveal',
+    label: 'À',
+    placeholder: 'Timestamp en s',
+    type: 'number'
+  },
+  {
+    name: 'type',
+    label: 'Type',
+    placeholder: 'Type de média',
+    type: 'select',
+    options: []
+  }
 ];
 
 function EditVideo({ video, close }) {
@@ -51,19 +65,17 @@ function EditVideo({ video, close }) {
     }
 
     setLock(true);
-    const toastId = toast.loading("Enregistrement");
+    const toastId = toast.loading('Enregistrement');
     const axiosMethod = (body) =>
-      video?.id
-        ? axiosCustom.patch(`/videos/${video.id}`, body)
-        : axiosCustom.post(`/videos`, body);
+      video?.id ? axiosCustom.patch(`/videos/${video.id}`, body) : axiosCustom.post(`/videos`, body);
     try {
       const res = await axiosMethod(editVideo);
       toast.update(toastId, {
-        type: "success",
-        render: "Réussi",
+        type: 'success',
+        render: 'Réussi',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
       if (video?.id) {
         const newVideos = [...videos].filter((v) => v.id !== video.id);
@@ -76,11 +88,11 @@ function EditVideo({ video, close }) {
     } catch (error) {
       console.error(error);
       toast.update(toastId, {
-        type: "error",
-        render: "Échoué",
+        type: 'error',
+        render: 'Échoué',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
     } finally {
       setTimeout(() => setLock(false), 500);
@@ -90,27 +102,20 @@ function EditVideo({ video, close }) {
   return (
     <div>
       <form onSubmit={onSubmit}>
-        {inputFields.map((field, index) => (
+        {getInputFields().map((field, index) => (
           <div key={index}>
-            <label htmlFor={field.name}>{field.label}:</label>
-            <input
-              id={field.name}
-              name={field.name}
-              value={editVideo?.[field.name]}
-              placeholder={field.placeholder}
-              type={field.type}
-              onChange={(e) =>
-                setEditVideo({ ...editVideo, [field.name]: e.target.value })
-              }
-            />
+            <label htmlFor={field.name}>{field.label}</label>
+            <CustomField field={field} data={editVideo} setData={setEditVideo} />
           </div>
         ))}
-        <button type="reset" onClick={close}>
-          Annuler
-        </button>
-        <button type="submit" disabled={lock}>
-          Sauvegarder
-        </button>
+        <div className="form-actions">
+          <button type="reset" onClick={close} className="outlined">
+            Annuler
+          </button>
+          <button type="submit" disabled={lock}>
+            Sauvegarder
+          </button>
+        </div>
       </form>
     </div>
   );

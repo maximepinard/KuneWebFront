@@ -10,7 +10,7 @@ h1 {
   --table-color: 30, 30, 30;
   --table-color-2nd: 50, 50, 50;
   --btn-bg: 244, 117, 33;
-  --btn-bg-hover: 254, 127, 43;
+  --btn-bg-hover: 255, 155, 73;
   --active-color: 244, 117, 33;
   --shadow-color: 0, 0, 0, 0.8;
   --text-color-btn: 0, 0, 0;
@@ -102,6 +102,11 @@ button {
 
 a {
   font-weight: 500;
+  color: rgb(var(--active-color));
+}
+
+a:visited {
+  color: rgb(var(--active-color));
 }
 
 div#root {

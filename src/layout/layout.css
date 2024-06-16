@@ -99,12 +99,17 @@ header nav a {
   font-family: 'Montserrat', sans-serif;
 }
 
-header nav a:hover {
+header nav a:visited {
+  color: rgb(var(--text-color));
+}
+
+header nav a.active,
+header nav a:visited.active {
   color: rgb(var(--active-color));
 }
 
-header nav a.active {
-  color: rgb(var(--active-color));
+header nav a:hover {
+  color: rgb(var(--btn-bg-hover));
 }
 
 form input,
@@ -122,11 +127,43 @@ form button {
   color: rgb(var(--text-color-btn));
   text-transform: uppercase;
   font-weight: bold;
+  box-shadow: 1px 1px 3px rgba(var(--shadow-color));
 }
 
 form input:focus-visible {
   outline: 1px solid rgb(var(--active-color));
   border-radius: 3px;
+}
+
+form > div label {
+  background: rgb(var(--active-color));
+  padding: 0.5rem;
+  border-radius: 5px 0 0 5px;
+  color: rgb(var(--text-color-btn));
+}
+
+form > div:has(label) {
+  display: flex;
+  align-items: center;
+  min-width: fit-content;
+  width: calc(50% - 0.5rem);
+}
+
+form > div:has(label) input {
+  border-radius: 0 5px 5px 0;
+  box-shadow: none;
+  flex: 1;
+}
+
+form .form-actions {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+form .form-actions > * {
+  flex: 1;
 }
 
 button {

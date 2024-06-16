@@ -8,7 +8,7 @@ function SelectingVideo({ videos, addVideo }) {
   const options = videos.map((v) => ({
     id: v.id,
     label: `${v.title} - ${v.artist}`,
-    code: v.code
+    image: `https://img.youtube.com/vi/${v.code}/default.jpg`
   }));
 
   return <SelectCustom options={options} setValue={handleSave} />;

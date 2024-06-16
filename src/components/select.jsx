@@ -5,8 +5,9 @@ const SelectCustom = ({
   value,
   setValue,
   options,
-  placeholder = 'Selectionner une vidéo à ajouter',
-  placeHolderNodata = 'Aucune vidéo à ajouter'
+  placeholder = 'Selectionner',
+  placeHolderNodata = 'N/A',
+  create
 }) => {
   const [filter, setFilter] = useState();
   const [open, setOpen] = useState(false);
@@ -27,6 +28,14 @@ const SelectCustom = ({
             placeholder={filteredOptions.length > 0 ? placeholder : placeHolderNodata}
             style={{ background: 'transparent', width: '100%' }}
             focus={true}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && create) {
+                setOpen(false);
+                setValue(filter);
+                setFilter('');
+                e.preventDefault();
+              }
+            }}
           />
         </div>
         <div className="custom-select-list">
@@ -41,7 +50,7 @@ const SelectCustom = ({
                   setOpen(false);
                 }}
               >
-                <img src={`https://img.youtube.com/vi/${o.code}/default.jpg`} />
+                {o.image && <img src={o.image} />}
                 <div>{o.label}</div>
               </div>
             ))}
