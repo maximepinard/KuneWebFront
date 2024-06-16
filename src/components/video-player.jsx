@@ -12,8 +12,8 @@ function VideoPlayer({ videos, id = '44723a' }) {
 
   const { YoutubePlayer, player } = useYoutubePlayer({
     videoId: id,
-    height: '390',
-    width: '640',
+    height: '624',
+    width: '1024',
     events: {
       onReady: () => {
         setIsReady(true);
@@ -101,8 +101,7 @@ function VideoPlayer({ videos, id = '44723a' }) {
           }}
         >
           <YoutubePlayer />
-          <h2>{videos[currentIndex]?.title}</h2>
-          <h2>{videos[currentIndex]?.artist}</h2>
+          <h2>{`${videos[currentIndex]?.title} - ${videos[currentIndex]?.artist}`}</h2>
         </div>
       </div>
     </div>
