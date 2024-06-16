@@ -1,15 +1,15 @@
-import { useContext } from "react";
-import { NavLink } from "react-router-dom";
-import { Outlet } from "react-router-dom";
-import { AuthContext } from "../global-context";
-import axiosCustom from "../tools/axiosCustom";
-import { toast } from "react-toastify";
+import { useContext } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { AuthContext } from '../global-context';
+import axiosCustom from '../tools/axiosCustom';
+import { toast } from 'react-toastify';
 
-import "./layout.css";
+import './layout.css';
 
-export const GAME_BLIND_TEST = "blind-test";
-export const GAME_PIXEL_IMAGE = "pixel-image";
-export const GAME_PANEL_IMAGE = "panel-image";
+export const GAME_BLIND_TEST = 'blind-test';
+export const GAME_PIXEL_IMAGE = 'pixel-image';
+export const GAME_PANEL_IMAGE = 'panel-image';
 
 function GameMenu({ game }) {
   if (game === GAME_PIXEL_IMAGE) {
@@ -25,7 +25,6 @@ function GameMenu({ game }) {
     <>
       <NavLink to="/video">videos</NavLink>
       <NavLink to="/playlist">playlists</NavLink>
-      <NavLink to="/play">Jouer</NavLink>
     </>
   );
 }
@@ -35,13 +34,13 @@ function Root() {
 
   function logout() {
     axiosCustom
-      .post("/user/logout")
+      .post('/user/logout')
       .then((res) => {
-        toast.info("Déconnexion réussie");
+        toast.info('Déconnexion réussie');
       })
       .catch((err) => {
         console.error(err);
-        toast.warn("Déconnexion réussie");
+        toast.warn('Déconnexion réussie');
       })
       .finally(() => {
         setUser();
