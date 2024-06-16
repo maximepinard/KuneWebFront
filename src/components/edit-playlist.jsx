@@ -110,7 +110,10 @@ function EditPlaylist({ playlist, videos, close }) {
                   <div>{`${v.title} - ${v.artist}`}</div>
                   <IconButton
                     icon={<DeleteIcon />}
-                    onClick={() => setPlaylistContent([...playlistContent].filter((c) => c.content_id !== v.id))}
+                    onClick={(e) => {
+                      setPlaylistContent([...playlistContent].filter((c) => c.content_id !== v.id));
+                      e.preventDefault();
+                    }}
                   />
                 </div>
               ))}
