@@ -12,7 +12,7 @@
 
 .basic-page {
   padding: 1rem;
-  max-width: 1024px;
+  max-width: 1280px;
   margin: auto;
   padding-top: 2rem;
   padding-bottom: 5rem;
@@ -79,7 +79,7 @@ header {
 
 header nav {
   display: flex;
-  max-width: 1024px;
+  max-width: 1280px;
   align-items: center;
   justify-content: space-between;
   /* gap: 1rem; */
@@ -96,7 +96,7 @@ header nav a {
   padding: 1rem;
   color: rgb(var(--text-color));
   text-transform: uppercase;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 header nav a:visited {
@@ -137,7 +137,7 @@ form input:focus-visible {
 
 form > div label {
   background: rgb(var(--active-color));
-  padding: 0.5rem;
+  padding: 8px;
   border-radius: 5px 0 0 5px;
   color: rgb(var(--text-color-btn));
 }
@@ -153,6 +153,7 @@ form > div:has(label) input {
   border-radius: 0 5px 5px 0;
   box-shadow: none;
   flex: 1;
+  padding: 8px 12px;
 }
 
 form .form-actions {
@@ -233,7 +234,7 @@ img {
 }
 
 .submenu-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   text-transform: uppercase;
 }
 

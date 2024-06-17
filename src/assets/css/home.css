@@ -37,11 +37,13 @@
 }
 
 .work-in-progress::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: url('/guess_img/WIP.png');
+  max-height: 624px;
+  max-width: 1024px;
+  background-image: url("/guess_img/WIP.png");
   background-repeat: no-repeat;
   transform-origin: center center;
   opacity: 0.8;
