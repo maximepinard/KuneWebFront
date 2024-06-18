@@ -4,6 +4,7 @@ h1 {
   padding: 0;
   margin: 0;
   color-scheme: dark;
+  font-size: 16px;
   --bg-color: 0, 0, 0;
   --bg-color-2nd: 30, 30, 30;
   --text-color: 255, 255, 255;
@@ -14,6 +15,20 @@ h1 {
   --active-color: 244, 117, 33;
   --shadow-color: 0, 0, 0, 0.8;
   --text-color-btn: 0, 0, 0;
+}
+
+/* Larger screens */
+@media (min-width: 1992px) {
+  body {
+    font-size: 19px;
+  }
+}
+
+/* Smaller tablets and mobiles */
+@media (max-width: 768px) {
+  body {
+    font-size: 13px;
+  }
 }
 
 @font-face {
@@ -87,6 +102,10 @@ body {
   background-repeat: no-repeat;
   color: rgb(var(--text-color));
   height: 100vh;
+}
+
+input {
+  font-family: 'Roboto', sans-serif;
 }
 
 h1,

@@ -32,7 +32,8 @@
   font-weight: 500;
 }
 
-.shine-text {
+.shine-text > * {
+  color: transparent !important;
   background-color: rgb(var(--bg-color-2nd));
   background: linear-gradient(
       105deg,
@@ -42,6 +43,7 @@
     )
     0 0 no-repeat;
   background-size: 800px;
+  -webkit-background-clip: text;
   background-clip: text;
   animation-name: shine;
   animation-duration: 8s;
@@ -84,6 +86,7 @@ header nav {
   justify-content: space-between;
   /* gap: 1rem; */
   margin: auto;
+  padding: 0.5rem;
   /* width: max-content; */
 }
 
@@ -93,10 +96,10 @@ header nav div {
 
 header nav a {
   text-decoration: none;
-  padding: 1rem;
+  padding: 0.5rem;
   color: rgb(var(--text-color));
   text-transform: uppercase;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 header nav a:visited {
@@ -147,6 +150,26 @@ form > div:has(label) {
   align-items: center;
   min-width: fit-content;
   width: calc(50% - 0.5rem);
+}
+
+form > div:has(.fullwidth) {
+  width: 100%;
+}
+
+.separator label {
+  background: transparent;
+  padding: 0;
+  color: rgb(var(--active-color));
+}
+
+.separator label:before {
+  content: '---';
+  padding-right: 8px;
+}
+
+.separator label:after {
+  content: '---';
+  padding-left: 8px;
 }
 
 form > div:has(label) input {
@@ -231,10 +254,11 @@ img {
 .submenu {
   display: flex;
   position: relative;
+  cursor: pointer;
 }
 
 .submenu-title {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
 }
 
@@ -245,7 +269,8 @@ img {
 }
 
 .submenu:hover .submenu-content,
-.submenu-content:hover {
+.submenu-content:hover,
+.submenu.open .submenu-content {
   display: flex;
   flex-direction: column;
   padding-top: 1rem;
@@ -254,6 +279,7 @@ img {
 }
 
 .submenu:hover .submenu-content a,
-.submenu-content:hover a {
+.submenu-content:hover a,
+.submenu.open .submenu-content a {
   white-space: nowrap;
 }
