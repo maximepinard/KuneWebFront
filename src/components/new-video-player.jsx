@@ -102,7 +102,10 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
 
   return (
     <div>
-      <div onClick={(e) => e.stopPropagation()} style={{ position: 'relative' }}>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}
+      >
         <div style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 2 }}></div>
         <div
           style={{
@@ -113,9 +116,11 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
           }}
         >
           <YoutubePlayer />
-          <div>
-            <h3>{`${video.artist} - ${video.title}`}</h3>
-          </div>
+          {video?.show && (
+            <div style={{ display: 'flex', justifyContent: 'center', margin: 'auto', zoom: 2 }}>
+              <h2>{`${video.artist} - ${video.title}`}</h2>
+            </div>
+          )}
         </div>
         {video && !video?.show && (
           <FakeTitle
@@ -128,7 +133,16 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
         )}
       </div>
 
-      <div style={{ display: noControls ? 'none' : 'flex', gap: '1rem', alignItems: 'center' }}>
+      <div
+        style={{
+          display: noControls ? 'none' : 'flex',
+          gap: '1rem',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zoom: 2,
+          zIndex: 3
+        }}
+      >
         {/*<label>
           Autoplay
           <input type="checkbox" checked={autoplay} onChange={(e) => setAutoplay(e.target.checked)} />

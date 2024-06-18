@@ -5,12 +5,18 @@ function FakeTitle({ size, player, total, start, timer = 10, auto = true }) {
   const [localTimer, setLocalTimer] = useState(timer * 10);
 
   useEffect(() => {
-    if (localTimer > 0) {
-      setTimeout(() => setLocalTimer(localTimer - 1), 100);
-    } else {
-      setTimeout(() => setLocalTimer(timer * 10), 100);
-    }
-  }, [localTimer, timer]);
+    const intervalId = setInterval(() => {
+      setLocalTimer((prevLocalTimer) => {
+        if (prevLocalTimer > 0) {
+          return prevLocalTimer - 1;
+        } else {
+          return timer * 10;
+        }
+      });
+    }, 100);
+
+    return () => clearInterval(intervalId);
+  }, [timer]);
 
   if ((player && player?.getCurrentTime && total && start !== null) || start !== undefined) {
     let timeLeft = total - start;

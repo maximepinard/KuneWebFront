@@ -98,12 +98,8 @@ function ReadPlaylist({ playlist, videos, close }) {
   }, [playlist]);
 
   return (
-    <div>
-      <IconButton
-        icon={<BackIcon />}
-        onClick={close}
-        style={{ position: 'absolute', transform: 'translateX(calc(-100% - 8px))' }}
-      />
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <IconButton icon={<BackIcon />} onClick={close} style={{ zoom: 2 }} />
       {contentIndex === playlistContent.length ? (
         <div>
           <h2>FIN</h2>
@@ -111,9 +107,10 @@ function ReadPlaylist({ playlist, videos, close }) {
       ) : (
         playlistContent &&
         playlistContent[contentIndex].content_type === 'video' && (
-          <NewVideoPlayer video={getVideo()} getPrevious={goPrevious} getNext={goNext} width={1280} height={720} />
+          <NewVideoPlayer video={getVideo()} getPrevious={goPrevious} getNext={goNext} width={1200} height={675} />
         )
       )}
+      <div />
     </div>
   );
 }
