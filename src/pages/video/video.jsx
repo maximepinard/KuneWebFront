@@ -1,12 +1,12 @@
-import { useContext, useState, useEffect } from "react";
-import { VideoContext } from "../../global-context";
-import EditIcon from "../../assets/svg/edit-icon";
-import DeleteIcon from "../../assets/svg/delete-icon";
-import IconButton from "../../components/icon-button";
-import AddIcon from "../../assets/svg/add-icon";
-import EditVideo from "../../components/edit-video";
-import axiosCustom from "../../tools/axiosCustom";
-import { toast } from "react-toastify";
+import { useContext, useState, useEffect } from 'react';
+import { VideoContext } from '../../global-context';
+import EditIcon from '../../assets/svg/edit-icon';
+import DeleteIcon from '../../assets/svg/delete-icon';
+import IconButton from '../../components/icon-button';
+import AddIcon from '../../assets/svg/add-icon';
+import EditVideo from '../../components/edit-video';
+import axiosCustom from '../../tools/axiosCustom';
+import { toast } from 'react-toastify';
 
 function VideoList() {
   const [editVideo, setEditVideo] = useState();
@@ -14,7 +14,7 @@ function VideoList() {
 
   useEffect(() => {
     axiosCustom
-      .get("/videos")
+      .get('/videos')
       .then((res) => {
         setVideos(res.data);
       })
@@ -28,12 +28,12 @@ function VideoList() {
     axiosCustom
       .delete(`/videos/${vid?.id}`)
       .then((res) => {
-        toast.success("vidéo supprimée");
+        toast.success('vidéo supprimée');
         const newVideos = [...videos].filter((v) => v.id !== vid.id);
         setVideos(newVideos);
       })
       .catch((err) => {
-        toast.error("erreur de suppression");
+        toast.error('erreur de suppression');
       });
   }
 
@@ -63,10 +63,7 @@ function VideoList() {
               <th>
                 <div className="action">
                   Actions
-                  <IconButton
-                    icon={<AddIcon />}
-                    onClick={() => setEditVideo({})}
-                  />
+                  <IconButton icon={<AddIcon />} onClick={() => setEditVideo({})} />
                 </div>
               </th>
             </tr>
@@ -78,17 +75,12 @@ function VideoList() {
                   <td>{vid.title}</td>
                   <td>{vid.artist}</td>
                   <td>
-                    <a
-                      href={`https://www.youtube.com/watch?v=${vid.code}`}
-                      target="_blank"
-                    >
+                    <a href={`https://www.youtube.com/watch?v=${vid.code}`} target="_blank">
                       {vid.code}
                     </a>
                   </td>
                   <td style={{ padding: 0 }}>
-                    <img
-                      src={`https://img.youtube.com/vi/${vid.code}/default.jpg`}
-                    />
+                    <img src={`https://img.youtube.com/vi/${vid.code}/default.jpg`} />
                   </td>
                   <td>{vid.startGuess}</td>
                   <td>{vid.endGuess}</td>

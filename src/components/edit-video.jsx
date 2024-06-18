@@ -1,9 +1,12 @@
 import { useState, useContext } from 'react';
 import { toast } from 'react-toastify';
 import axiosCustom from '../tools/axiosCustom';
-import '../assets/css/edit.css';
 import { VideoContext } from '../global-context';
 import CustomField from './CustomField';
+import { convertIntegerToTime, convertTimeToInteger, extractCodeFromYoutubeUrl } from '../tools/input-tools';
+import NewVideoPlayer from './new-video-player';
+
+import '../assets/css/edit.css';
 
 const getInputFields = () => [
   { name: 'title', label: 'Title', placeholder: 'Entrer titre', type: 'text' },
@@ -13,7 +16,7 @@ const getInputFields = () => [
     placeholder: `Nom de l'artist`,
     type: 'text'
   },
-  { name: 'code', label: 'Code', placeholder: 'Entrer code', type: 'text' },
+  { name: 'code', label: 'Code', placeholder: 'Entrer code', type: 'text', formatOutput: extractCodeFromYoutubeUrl },
   {
     name: 'date',
     label: 'Date',
@@ -21,28 +24,48 @@ const getInputFields = () => [
     type: 'date'
   },
   {
+    InputType: 'label-group',
+    title: 'Deviner'
+  },
+  {
     name: 'startGuess',
     label: 'De',
     placeholder: 'Timestamp en s',
-    type: 'number'
+    type: 'time',
+    step: 1,
+    formatInput: convertIntegerToTime,
+    formatOutput: convertTimeToInteger
   },
   {
     name: 'endGuess',
     label: 'À',
     placeholder: 'Timestamp en s',
-    type: 'number'
+    type: 'time',
+    step: 1,
+    formatInput: convertIntegerToTime,
+    formatOutput: convertTimeToInteger
+  },
+  {
+    InputType: 'label-group',
+    title: 'Révéler'
   },
   {
     name: 'startReveal',
     label: 'De',
     placeholder: 'Timestamp en s',
-    type: 'number'
+    type: 'time',
+    step: 1,
+    formatInput: convertIntegerToTime,
+    formatOutput: convertTimeToInteger
   },
   {
     name: 'endReveal',
     label: 'À',
     placeholder: 'Timestamp en s',
-    type: 'number'
+    type: 'time',
+    step: 1,
+    formatInput: convertIntegerToTime,
+    formatOutput: convertTimeToInteger
   },
   {
     name: 'type',
@@ -56,6 +79,8 @@ const getInputFields = () => [
 function EditVideo({ video, close }) {
   const { videos, setVideos } = useContext(VideoContext);
   const [editVideo, setEditVideo] = useState({ ...video });
+  const [previewVideo, setPreviewVideo] = useState({ ...video });
+  const [preview, setPreview] = useState(0);
   const [lock, setLock] = useState();
 
   async function onSubmit(e) {
@@ -99,12 +124,28 @@ function EditVideo({ video, close }) {
     }
   }
 
+  function handleNext() {
+    if (previewVideo.show) {
+      setPreviewVideo({ ...editVideo, start: editVideo.startGuess, end: editVideo.endGuess, show: false });
+    } else {
+      setPreviewVideo({ ...editVideo, start: editVideo.startReveal, end: editVideo.endReveal, show: true });
+    }
+  }
+
+  function handlePrevious() {
+    if (previewVideo.show) {
+      setPreviewVideo({ ...editVideo, start: editVideo.startGuess, end: editVideo.endGuess, show: false });
+    } else {
+      setPreviewVideo({ ...editVideo, start: editVideo.startReveal, end: editVideo.endReveal, show: true });
+    }
+  }
+
   return (
     <div>
       <form onSubmit={onSubmit}>
         {getInputFields().map((field, index) => (
           <div key={index}>
-            <label htmlFor={field.name}>{field.label}</label>
+            {field.label && <label htmlFor={field.name}>{field.label}</label>}
             <CustomField field={field} data={editVideo} setData={setEditVideo} />
           </div>
         ))}
@@ -115,6 +156,27 @@ function EditVideo({ video, close }) {
           <button type="submit" disabled={lock}>
             Sauvegarder
           </button>
+        </div>
+        <div className="preview">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setPreview(!preview);
+              setPreviewVideo({ ...editVideo, start: editVideo.startGuess, end: editVideo.endGuess, show: false });
+            }}
+          >
+            {!preview ? 'Previsualiser' : 'Stop'}
+          </button>
+          {editVideo && editVideo.code && Boolean(preview) && (
+            <div style={{ width: 640, height: 360, paddingBottom: '4rem' }}>
+              <NewVideoPlayer
+                video={previewVideo}
+                getNext={handleNext}
+                getPrevious={handlePrevious}
+                noControls={true}
+              />
+            </div>
+          )}
         </div>
       </form>
     </div>

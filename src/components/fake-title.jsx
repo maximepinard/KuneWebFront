@@ -1,25 +1,42 @@
 import { useEffect, useState } from 'react';
 import '../assets/css/fake-title.css';
 
-function FakeTitle({ title, artist, genre, year, timer = 10, size }) {
-  const [localTimer, setLocalTimer] = useState(timer);
+function FakeTitle({ size, player, total, start, timer = 10, auto = true }) {
+  const [localTimer, setLocalTimer] = useState(timer * 10);
 
   useEffect(() => {
     if (localTimer > 0) {
-      setTimeout(() => setLocalTimer(localTimer - 1), 1000);
+      setTimeout(() => setLocalTimer(localTimer - 1), 100);
     } else {
-      setTimeout(() => setLocalTimer(timer), 1000);
+      setTimeout(() => setLocalTimer(timer * 10), 100);
     }
   }, [localTimer, timer]);
 
+  if ((player && player?.getCurrentTime && total && start !== null) || start !== undefined) {
+    let timeLeft = total - start;
+    let currentVideoTime = !isNaN(parseInt(player.getCurrentTime())) ? total - parseInt(player.getCurrentTime()) : 9999;
+    let time = Math.min(timeLeft, currentVideoTime);
+    return (
+      <div className={`fake-title ${time ? 'guess' : ''}`} style={{ zoom: size ? size : 1 }}>
+        <div className="disc"></div>
+        <div className="timer">{time}</div>
+      </div>
+    );
+  }
+
+  if (auto) {
+    return (
+      <div className={`fake-title  ${timer ? 'guess' : ''}`} style={{ zoom: size ? size : 1 }}>
+        <div className="disc"></div>
+        <div className="timer">{localTimer ? parseInt(localTimer / 10) : 0}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`fake-title size-${size} ${timer ? 'guess' : ''}`}>
+    <div className={`fake-title guess`} style={{ zoom: size ? size : 1 }}>
       <div className="disc"></div>
-      <div className="timer">{localTimer ? localTimer : 0}</div>
-      {title && <p>{title}</p>}
-      {artist && <p>{artist}</p>}
-      {genre && <p>{genre}</p>}
-      {year && <p>{year}</p>}
+      <div className="timer"></div>
     </div>
   );
 }

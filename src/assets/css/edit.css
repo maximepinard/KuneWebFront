@@ -29,3 +29,8 @@
 .playlist-video-list .video-item button {
   margin-left: auto;
 }
+
+#video .preview {
+  display: flex;
+  flex-direction: column;
+}

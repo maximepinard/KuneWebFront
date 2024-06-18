@@ -96,7 +96,7 @@ header nav a {
   padding: 1rem;
   color: rgb(var(--text-color));
   text-transform: uppercase;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 header nav a:visited {
@@ -147,6 +147,26 @@ form > div:has(label) {
   align-items: center;
   min-width: fit-content;
   width: calc(50% - 0.5rem);
+}
+
+form > div:has(.fullwidth) {
+  width: 100%;
+}
+
+.separator label {
+  background: transparent;
+  padding: 0;
+  color: rgb(var(--active-color));
+}
+
+.separator label:before {
+  content: '---';
+  padding-right: 8px;
+}
+
+.separator label:after {
+  content: '---';
+  padding-left: 8px;
 }
 
 form > div:has(label) input {
@@ -234,7 +254,7 @@ img {
 }
 
 .submenu-title {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
 }
 

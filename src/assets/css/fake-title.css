@@ -1,5 +1,4 @@
 .fake-title {
-  margin-top: 10px;
   background: rgb(var(--bg-color-2nd));
   border-radius: 10px;
   display: flex;
@@ -15,7 +14,7 @@
 }
 
 .fake-title.size-1280 {
-  zoom: 1.6;
+  zoom: 2;
 }
 
 .fake-title .disc {

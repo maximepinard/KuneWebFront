@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import { useRef, useMemo, useEffect, useCallback } from "react";
+import { useRef, useMemo, useEffect, useCallback } from 'react';
 
 export function useYoutubePlayer(options) {
   const playerRef = useRef();
@@ -9,13 +9,7 @@ export function useYoutubePlayer(options) {
   const YoutubePlayer = useMemo(() => {
     return (props) => {
       const playerId = `youtube-player-${options?.videoId}`;
-      return (
-        <div
-          className={`${props.className || ""}`}
-          style={props.style}
-          id={playerId}
-        />
-      );
+      return <div className={`${props.className || ''}`} style={props.style} id={playerId} />;
     };
   }, [options.videoId]);
 
@@ -23,27 +17,13 @@ export function useYoutubePlayer(options) {
    * Queueing functions
    */
 
-  const loadVideoById = useCallback(
-    (videoId, startSeconds, suggestedVideoQuality) => {
-      return playerRef.current?.loadVideoById(
-        videoId,
-        startSeconds,
-        suggestedVideoQuality,
-      );
-    },
-    [],
-  );
+  const loadVideoById = useCallback((videoId, startSeconds, suggestedVideoQuality) => {
+    return playerRef.current?.loadVideoById(videoId, startSeconds, suggestedVideoQuality);
+  }, []);
 
-  const cueVideoById = useCallback(
-    (videoId, startSeconds, suggestedVideoQuality) => {
-      return playerRef.current?.cueVideoById(
-        videoId,
-        startSeconds,
-        suggestedVideoQuality,
-      );
-    },
-    [],
-  );
+  const cueVideoById = useCallback((videoId, startSeconds, suggestedVideoQuality) => {
+    return playerRef.current?.cueVideoById(videoId, startSeconds, suggestedVideoQuality);
+  }, []);
 
   const cuePlaylist = useCallback((playlist, index, startSeconds) => {
     return playerRef.current?.cuePlaylist(playlist, index, startSeconds);
@@ -167,7 +147,7 @@ export function useYoutubePlayer(options) {
   }, []);
 
   const getCurrentTime = useCallback(() => {
-    return playerRef.current?.getCurrentTime();
+    return playerRef.current?.getCurrentTime && playerRef.current?.getCurrentTime();
   }, []);
 
   /**
@@ -220,21 +200,18 @@ export function useYoutubePlayer(options) {
   }, []);
 
   const loadVideo = useCallback(() => {
-    playerRef.current = new window.YT.Player(
-      `youtube-player-${options.videoId}`,
-      {
-        videoId: options.videoId,
-        playerVars: options.playerVars,
-        height: options.height || 390,
-        width: options.width || 640,
-        events: {
-          ...options.events,
-          onReady: (e) => {
-            options.events?.onReady?.(e);
-          },
-        },
-      },
-    );
+    playerRef.current = new window.YT.Player(`youtube-player-${options.videoId}`, {
+      videoId: options.videoId,
+      playerVars: options.playerVars,
+      height: options.height || 390,
+      width: options.width || 640,
+      events: {
+        ...options.events,
+        onReady: (e) => {
+          options.events?.onReady?.(e);
+        }
+      }
+    });
   }, [options]);
 
   // INTERNAL
@@ -242,9 +219,9 @@ export function useYoutubePlayer(options) {
   useEffect(() => {
     if ((window && !window.YT) || !options.videoId) {
       new Promise((resolve) => {
-        const tag = document.createElement("script");
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName("script")[0];
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
         // @ts-ignore
         window.onYouTubeIframeAPIReady = () => {
@@ -295,7 +272,7 @@ export function useYoutubePlayer(options) {
       addEventListener,
       removeEventListener,
       getIframe,
-      destroy,
+      destroy
     };
   }, [
     addEventListener,
@@ -333,11 +310,11 @@ export function useYoutubePlayer(options) {
     setSphericalProperties,
     setVolume,
     stopVideo,
-    unMute,
+    unMute
   ]);
 
   return {
     YoutubePlayer,
-    player,
+    player
   };
 }

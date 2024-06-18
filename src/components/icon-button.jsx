@@ -1,11 +1,11 @@
-import "../assets/css/icon-button.css";
+import '../assets/css/icon-button.css';
 
 function IconButton({ icon, ...props }) {
   return (
     <button
       className="icon"
       style={{
-        ...props?.style,
+        ...props?.style
       }}
       {...props}
     >
