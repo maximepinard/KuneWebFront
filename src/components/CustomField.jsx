@@ -1,4 +1,17 @@
-function CustomField({ data, setData, field }) {
+import { useState } from 'react';
+
+function CustomField({ data, setData, field, debounce }) {
+  const [localValue, setLocalValue] = useState(getData(data, field));
+  // Define the common props for the input element
+  const inputProps = {
+    id: field.name,
+    name: field.name,
+    placeholder: field.placeholder,
+    type: field.type,
+    step: field?.step,
+    onChange: (e) => outPutData(e, data, field, setData, setLocalValue)
+  };
+
   if (field.InputType === 'label-group') {
     return (
       <div className="fullwidth separator">
@@ -6,25 +19,19 @@ function CustomField({ data, setData, field }) {
       </div>
     );
   }
-  return (
-    <input
-      id={field.name}
-      name={field.name}
-      value={getData(data, field) ?? ''}
-      placeholder={field.placeholder}
-      type={field.type}
-      onChange={(e) => outPutData(e, data, field, setData)}
-      step={field?.step}
-    />
-  );
+  if (field.isValueOnlyDefault) {
+    return <input {...inputProps} defaultValue={getData(data, field) ?? ''} />;
+  }
+  return <input {...inputProps} value={getData(data, field) ?? ''} />;
 }
 
-function outPutData(e, data, field, setData) {
+function outPutData(e, data, field, setData, setLocalValue) {
   let value = e.target.value;
   if (field && field.formatOutput) {
     value = field.formatOutput(value);
   }
   setData({ ...data, [field.name]: value });
+  setLocalValue(value);
 }
 
 function getData(data, field) {

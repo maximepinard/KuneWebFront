@@ -31,3 +31,34 @@ export function extractCodeFromYoutubeUrl(url) {
     return url;
   }
 }
+
+export function getMax16by9Dimensions(element = null, widthOffset = 0, heightOffset = 0) {
+  let width, height;
+
+  if (element) {
+    width = element.clientWidth;
+    height = element.clientHeight;
+  } else {
+    width = window.innerWidth;
+    height = window.innerHeight;
+  }
+
+  // Apply the offsets
+  width -= widthOffset;
+  height -= heightOffset;
+
+  // Calculate the maximum width and height that fit within the 16:9 aspect ratio
+  let maxWidth = width;
+  let maxHeight = (maxWidth / 16) * 9;
+
+  // If the calculated height is greater than the available height, adjust the width and height
+  if (maxHeight > height) {
+    maxHeight = height;
+    maxWidth = (maxHeight / 9) * 16;
+  }
+
+  return {
+    width: maxWidth,
+    height: maxHeight
+  };
+}

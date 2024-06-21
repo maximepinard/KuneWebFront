@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 // import { useNavigate } from 'react-router-dom';
 import axiosCustom from '../../tools/axiosCustom';
-import VideoPlayer from '../../components/video-player';
 import IconButton from '../../components/icon-button';
 import BackIcon from '../../assets/svg/back-icon';
 import NewVideoPlayer from '../../components/new-video-player';
+import { getMax16by9Dimensions } from '../../tools/input-tools';
 
 function ReadPlaylist({ playlist, videos, close }) {
   const [playlistContent, setPlaylistContent] = useState([]);
@@ -97,9 +97,11 @@ function ReadPlaylist({ playlist, videos, close }) {
     }
   }, [playlist]);
 
+  const { width, height } = getMax16by9Dimensions(document.querySelector('main'), 0, 144);
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <IconButton icon={<BackIcon />} onClick={close} style={{ zoom: 2 }} />
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '-1rem' }}>
+      <IconButton icon={<BackIcon />} onClick={close} style={{ zoom: 1.8 }} />
       {contentIndex === playlistContent.length ? (
         <div>
           <h2>FIN</h2>
@@ -107,7 +109,7 @@ function ReadPlaylist({ playlist, videos, close }) {
       ) : (
         playlistContent &&
         playlistContent[contentIndex].content_type === 'video' && (
-          <NewVideoPlayer video={getVideo()} getPrevious={goPrevious} getNext={goNext} width={1200} height={675} />
+          <NewVideoPlayer video={getVideo()} getPrevious={goPrevious} getNext={goNext} width={width} height={height} />
         )
       )}
       <div />

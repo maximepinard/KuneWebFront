@@ -33,6 +33,7 @@ const getInputFields = () => [
     placeholder: 'Timestamp en s',
     type: 'time',
     step: 1,
+    isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
     formatOutput: convertTimeToInteger
   },
@@ -42,6 +43,7 @@ const getInputFields = () => [
     placeholder: 'Timestamp en s',
     type: 'time',
     step: 1,
+    isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
     formatOutput: convertTimeToInteger
   },
@@ -55,6 +57,7 @@ const getInputFields = () => [
     placeholder: 'Timestamp en s',
     type: 'time',
     step: 1,
+    isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
     formatOutput: convertTimeToInteger
   },
@@ -64,6 +67,7 @@ const getInputFields = () => [
     placeholder: 'Timestamp en s',
     type: 'time',
     step: 1,
+    isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
     formatOutput: convertTimeToInteger
   },

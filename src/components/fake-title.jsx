@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import '../assets/css/fake-title.css';
 
-function FakeTitle({ size, player, total, start, timer = 10, auto = true }) {
-  const [localTimer, setLocalTimer] = useState(timer * 10);
+function FakeTitle({ size, player, total, start, timer = 10, auto = true, type, year }) {
+  const [localTimer, setLocalTimer] = useState(timer * 10 - 2);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -18,31 +18,29 @@ function FakeTitle({ size, player, total, start, timer = 10, auto = true }) {
     return () => clearInterval(intervalId);
   }, [timer]);
 
+  let displayTimer = '';
   if ((player && player?.getCurrentTime && total && start !== null) || start !== undefined) {
     let timeLeft = total - start;
     let currentVideoTime = !isNaN(parseInt(player.getCurrentTime())) ? total - parseInt(player.getCurrentTime()) : 9999;
-    let time = Math.min(timeLeft, currentVideoTime);
-    return (
-      <div className={`fake-title ${time ? 'guess' : ''}`} style={{ zoom: size ? size : 1 }}>
-        <div className="disc"></div>
-        <div className="timer">{time}</div>
-      </div>
-    );
+    displayTimer = Math.min(timeLeft, currentVideoTime);
   }
 
   if (auto) {
-    return (
-      <div className={`fake-title  ${timer ? 'guess' : ''}`} style={{ zoom: size ? size : 1 }}>
-        <div className="disc"></div>
-        <div className="timer">{localTimer ? parseInt(localTimer / 10) : 0}</div>
-      </div>
-    );
+    displayTimer = localTimer ? Math.round(localTimer / 10) : 0;
   }
+
+  displayTimer = displayTimer < 0 ? 0 : displayTimer;
 
   return (
     <div className={`fake-title guess`} style={{ zoom: size ? size : 1 }}>
       <div className="disc"></div>
-      <div className="timer"></div>
+      <div className="timer">
+        <div>
+          <span className="timer-timer">{displayTimer}</span>
+          <span className="timer-type">{type}</span>
+          <span className="timer-year">{year ? year.split('-')[0] : ''}</span>
+        </div>
+      </div>
     </div>
   );
 }

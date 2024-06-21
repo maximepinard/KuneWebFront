@@ -117,19 +117,23 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
         >
           <YoutubePlayer />
           {video?.show && (
-            <div style={{ display: 'flex', justifyContent: 'center', margin: 'auto', zoom: 2 }}>
-              <h2>{`${video.artist} - ${video.title}`}</h2>
+            <div style={{ display: 'flex', justifyContent: 'center', margin: 'auto', zoom: 1.8 }}>
+              <h2 style={{ margin: 'auto' }}>{`${video.artist} - ${video.title}`}</h2>
             </div>
           )}
         </div>
         {video && !video?.show && (
-          <FakeTitle
-            auto={false}
-            total={video?.end}
-            start={video?.start}
-            player={player}
-            size={width ? width / 680 : 680}
-          />
+          <div style={{ position: 'relative' }}>
+            <FakeTitle
+              auto={false}
+              total={video?.end}
+              start={video?.start}
+              player={player}
+              type={video?.type}
+              year={video?.date}
+              size={width ? width / 680 : 680}
+            />
+          </div>
         )}
       </div>
 
@@ -139,8 +143,8 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
           gap: '1rem',
           alignItems: 'center',
           justifyContent: 'center',
-          zoom: 2,
-          zIndex: 3
+          zoom: 1.8,
+          zIndex: 13
         }}
       >
         {/*<label>
