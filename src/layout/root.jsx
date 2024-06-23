@@ -40,7 +40,6 @@ function MobileGameMenu({ game }) {
       <div className="submenu">
         <NavLink to="/image">images</NavLink>
         <NavLink to="/playlist">playlists</NavLink>
-        <NavLink to="/play">Jouer</NavLink>
       </div>
     );
   }

@@ -86,7 +86,7 @@ header nav {
   justify-content: space-between;
   /* gap: 1rem; */
   margin: auto;
-  padding: 0.5rem;
+  padding: 0 1rem;
   /* width: max-content; */
 }
 
@@ -215,35 +215,6 @@ button.outlined:hover {
   border: 1px solid rgb(var(--btn-bg-hover));
   background: transparent;
   color: rgb(var(--btn-bg-hover));
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 10px;
-  box-shadow: 0 0 0 1px rgba(var(--text-color), 0.3);
-  border-style: hidden;
-  overflow: hidden;
-  background: rgb(var(--table-color));
-}
-
-table th,
-table td {
-  padding: 0.5rem;
-  text-align: center;
-}
-
-table thead tr:nth-child(odd),
-table tbody tr:nth-child(even) {
-  background: rgb(var(--table-color-2nd));
-}
-
-table div.action {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: auto;
-  width: fit-content;
 }
 
 img {
