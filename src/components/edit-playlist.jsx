@@ -1,12 +1,12 @@
-import { useState, useContext, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { useState, useContext, useEffect, useRef, useMemo } from 'react';
 import axiosCustom from '../tools/axiosCustom';
+import { toast } from 'react-toastify';
 import { VideoContext } from '../global-context';
 import IconButton from './icon-button';
 import SelectingVideo from './select-video';
 import DeleteIcon from '../assets/svg/delete-icon';
-import '../assets/css/edit.css';
 import CustomField from './CustomField';
+import '../assets/css/edit.css';
 
 const inputFields = [
   {
@@ -14,35 +14,47 @@ const inputFields = [
     label: 'Nom',
     placeholder: 'Nom de la playlist',
     type: 'text'
+  },
+  {
+    name: 'public',
+    label: 'Publique',
+    type: 'switch'
   }
 ];
 
-function EditPlaylist({ playlist, videos, close }) {
+function EditPlaylist({ playlist, videos, close, readOnly = false }) {
   const { playlists, setPlaylists } = useContext(VideoContext);
   const [editPlaylist, setEditPlaylist] = useState({ ...playlist });
   const [playlistContent, setPlaylistContent] = useState([]);
   const [lock, setLock] = useState();
 
-  const videosContentIds = playlistContent.filter((c) => c.content_type === 'video').map((c) => c.content_id);
+  const getContentInOrder = (contents) => {
+    const newContent = [];
+    contents
+      .sort((a, b) => a.order_num - b.order_num)
+      .forEach((c, i) => {
+        if (c.content_type === 'video') {
+          newContent.push(c);
+        }
+      });
+    return newContent;
+  };
 
-  const videosInPlaylist = videos?.filter((v) => videosContentIds?.includes && videosContentIds?.includes(v.id));
+  const contentInPlaylist = useMemo(() => getContentInOrder(playlistContent), [playlistContent]);
 
   useEffect(() => {
     if (playlist?.id) {
-      axiosCustom
-        .get(`/playlists/${playlist?.id}`)
-        .then((res) => {
-          setPlaylistContent(
-            res.data?.map &&
-              res.data?.map((c) => ({
-                content_id: c.content_id,
-                content_type: c.content_type
+      setPlaylistContent(
+        playlist.contentPlaylists?.map
+          ? playlist.contentPlaylists
+              ?.sort((a, b) => a.order_num - b.order_num)
+              ?.map((c, i) => ({
+                ...c,
+                content_type: c.content_type,
+                order_num: c.order_num || i
               }))
-          );
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+          : []
+      );
     }
   }, [playlist]);
 
@@ -69,8 +81,12 @@ function EditPlaylist({ playlist, videos, close }) {
         autoClose: 2000
       });
       if (playlist?.id) {
-        const newPlaylists = [...playlists].filter((p) => p.id !== playlist.id);
-        setPlaylists([...newPlaylists, res.data]);
+        const newPlaylists = [...playlists];
+        const index = newPlaylists.findIndex((p) => p.id === playlist.id);
+        if (index > -1) {
+          newPlaylists[index] = res.data;
+          setPlaylists(newPlaylists);
+        }
       } else {
         setPlaylists([...playlists, res.data]);
       }
@@ -90,43 +106,112 @@ function EditPlaylist({ playlist, videos, close }) {
     }
   }
 
+  const dragItem = useRef();
+  const dragOverItem = useRef();
+
+  const handleDragStart = (_e, position) => {
+    dragItem.current = position;
+  };
+
+  const handleDragEnter = (_e, position) => {
+    dragOverItem.current = position;
+  };
+
+  const handleDragEnd = (_e) => {
+    const copyRows = [...playlistContent];
+    console.log(copyRows);
+    const dragItemContent = copyRows[dragItem.current];
+    const dragOverItemContent = copyRows[dragOverItem.current];
+
+    // Swap the order_num properties
+    const tempOrder = dragItemContent.order_num;
+    dragItemContent.order_num = dragOverItemContent.order_num;
+    dragOverItemContent.order_num = tempOrder;
+
+    // Update the playlist content with the new order
+    setPlaylistContent([...copyRows.sort((a, b) => a.order_num - b.order_num)]);
+
+    dragItem.current = null;
+    dragOverItem.current = null;
+  };
+
+  const contentsIds = contentInPlaylist?.map((c) => c.content_id);
+
+  function displayVideo(content, i) {
+    const video = content.video;
+    return (
+      <div
+        key={i}
+        className="playlist-item"
+        draggable={!readOnly}
+        onDragStart={(e) => handleDragStart(e, i)}
+        onDragEnter={(e) => handleDragEnter(e, i)}
+        onDragEnd={handleDragEnd}
+        onDragOver={(e) => e.preventDefault()}
+      >
+        <div>
+          <img src={`https://img.youtube.com/vi/${video.code}/default.jpg`} />
+        </div>
+        <div>{`${video.title || ''} - ${video.artist || ''}`}</div>
+        {!readOnly && (
+          <IconButton
+            icon={<DeleteIcon />}
+            onClick={(e) => {
+              setPlaylistContent(
+                [...playlistContent].filter(
+                  (c) => c.content_id !== content.content_id || c.content_type !== content.content_type
+                )
+              );
+              e.preventDefault();
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
       <form onSubmit={onSubmit}>
         {inputFields.map((field, index) => (
           <div key={index}>
             <label htmlFor={field.name}>{field.label}</label>
-            <CustomField field={field} data={editPlaylist} setData={setEditPlaylist} />
+            <CustomField field={field} disabled={readOnly} data={editPlaylist} setData={setEditPlaylist} />
           </div>
         ))}
-        <div className="playlist-video-list">
+        <div>{`${contentInPlaylist.length} éléments`}</div>
+        <div className="playlist-item-list">
           <div>
-            {videosInPlaylist?.map &&
-              videosInPlaylist.map((v, i) => (
-                <div key={i} className="video-item">
-                  <div>
-                    <img src={`https://img.youtube.com/vi/${v.code}/default.jpg`} />
-                  </div>
-                  <div>{`${v.title} - ${v.artist}`}</div>
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    onClick={(e) => {
-                      setPlaylistContent([...playlistContent].filter((c) => c.content_id !== v.id));
-                      e.preventDefault();
-                    }}
-                  />
-                </div>
-              ))}
-            <SelectingVideo
-              videos={videos?.filter ? videos.filter((v) => !videosContentIds?.includes(v.id)) : []}
-              addVideo={(id) => setPlaylistContent([...playlistContent, { content_id: id, content_type: 'video' }])}
-            />
+            {contentInPlaylist?.map &&
+              contentInPlaylist
+                .sort((a, b) => a.order_num - b.order_num)
+                .map((c, i) => {
+                  if (c.content_type === 'video') {
+                    return displayVideo(c, i);
+                  }
+                })}
+            {!readOnly && (
+              <SelectingVideo
+                videos={videos?.filter ? videos.filter((v) => !contentsIds?.includes(v.id)) : []}
+                addVideo={(id) =>
+                  setPlaylistContent([
+                    ...playlistContent,
+                    {
+                      content_id: id,
+                      content_type: 'video',
+                      video: videos.find((v) => v.id === id),
+                      order_num: playlistContent.length
+                    }
+                  ])
+                }
+              />
+            )}
           </div>
         </div>
         <button type="reset" onClick={close}>
           Annuler
         </button>
-        <button type="submit" disabled={lock}>
+        <button type="submit" disabled={lock || readOnly}>
           Sauvegarder
         </button>
       </form>

@@ -40,7 +40,6 @@ function MobileGameMenu({ game }) {
       <div className="submenu">
         <NavLink to="/image">images</NavLink>
         <NavLink to="/playlist">playlists</NavLink>
-        <NavLink to="/play">Jouer</NavLink>
       </div>
     );
   }
@@ -63,7 +62,6 @@ function MobileGameMenu({ game }) {
 function Root() {
   const { user, setUser, game } = useContext(AuthContext);
   const media = getMedia();
-  console.log('media', media);
 
   function logout() {
     axiosCustom

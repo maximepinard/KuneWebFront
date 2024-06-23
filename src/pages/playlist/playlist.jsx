@@ -9,16 +9,21 @@ import EditPlaylist from '../../components/edit-playlist';
 import axiosCustom from '../../tools/axiosCustom';
 import { toast } from 'react-toastify';
 import ReadPlaylist from './read-playlist';
+import KuneTable from '../../components/kune-table';
+import ViewIcon from '../../assets/svg/view-icon';
 
 function PlayList() {
   const [editPlaylist, setEditPlaylist] = useState();
   const [readPlaylist, setReadPlaylist] = useState();
-  const { game } = useContext(AuthContext);
+  const [list, setList] = useState('mine');
+  const { game, user } = useContext(AuthContext);
   const { playlists, videos, setVideos, setPlaylists } = useContext(VideoContext);
+
+  console.log('playlists', playlists);
 
   useEffect(() => {
     axiosCustom
-      .get('/playlists')
+      .get('/playlists/full')
       .then((res) => {
         setPlaylists(res.data);
       })
@@ -53,40 +58,66 @@ function PlayList() {
   function displayActions(play) {
     return (
       <div className="action">
-        <IconButton icon={<EditIcon />} onClick={() => setEditPlaylist(play)} />
-        <IconButton icon={<DeleteIcon />} onClick={() => deletePlaylist(play)} />
+        {list === 'mine' && <IconButton icon={<EditIcon />} onClick={() => setEditPlaylist(play)} />}
+        {list === 'mine' && <IconButton icon={<DeleteIcon />} onClick={() => deletePlaylist(play)} />}
+        {list === 'public' && <IconButton icon={<ViewIcon />} onClick={() => setEditPlaylist(play)} />}
         <IconButton icon={<PlayIcon />} onClick={() => setReadPlaylist(play)} />
       </div>
     );
   }
 
+  const columns = [
+    { label: 'Nom', name: 'name' },
+    { label: 'Créateur', render: (item) => item?.user?.login },
+    {
+      label: 'Type',
+      render: (item) => {
+        const content_types = new Set(item?.contentPlaylists?.map((c) => c.content_type) || []);
+        const typesArray = Array.from(content_types);
+        return typesArray.length > 1 ? 'mix' : typesArray[0];
+      }
+    },
+    { label: 'Éléments', render: (item) => item?.contentPlaylists?.length },
+    {
+      label: 'Actions',
+      name: 'title',
+      render: (item) => displayActions(item),
+      headerRender: () => (
+        <div className="action">
+          Actions
+          <IconButton icon={<AddIcon />} onClick={() => setEditPlaylist({})} />
+        </div>
+      )
+    }
+  ];
+
+  const filteredPlaylists =
+    list === 'mine' ? playlists.filter((p) => !p.public || p.user_id === user.id) : playlists.filter((p) => p.public);
+
   return (
     <div id="playlist" className="basic-page">
-      {editPlaylist && <EditPlaylist playlist={editPlaylist} videos={videos} close={() => setEditPlaylist()} />}
-      {readPlaylist && <ReadPlaylist playlist={readPlaylist} videos={videos} close={() => setReadPlaylist()} />}
+      {editPlaylist && (
+        <EditPlaylist
+          playlist={editPlaylist}
+          readOnly={list === 'public'}
+          videos={videos}
+          close={() => setEditPlaylist()}
+        />
+      )}
+      {readPlaylist && <ReadPlaylist playlist={readPlaylist} close={() => setReadPlaylist()} />}
       {!editPlaylist && !readPlaylist && (
-        <table>
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>
-                <div className="action">
-                  Actions
-                  <IconButton icon={<AddIcon />} onClick={() => setEditPlaylist({})} />
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {playlists?.map &&
-              playlists.map((play, i) => (
-                <tr key={i}>
-                  <td>{play.name}</td>
-                  <td>{displayActions(play)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        <>
+          <div style={{ display: 'flex', gap: '1rem', paddingBottom: '1rem' }}>
+            <button className={list === 'mine' ? 'contained' : 'outlined'} onClick={() => setList('mine')}>
+              Mes Playlists
+            </button>
+            <button className={list === 'public' ? 'contained' : 'outlined'} onClick={() => setList('public')}>
+              Playlists publiques
+            </button>
+            {list === 'public' && <IconButton icon={<PlayIcon />} />}
+          </div>
+          <KuneTable columns={columns} rows={filteredPlaylists} />
+        </>
       )}
     </div>
   );

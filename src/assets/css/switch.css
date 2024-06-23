@@ -1,0 +1,36 @@
+.switch-wrap {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  width: 32px;
+  height: 12px;
+  border-radius: 6px;
+  background: rgba(var(--text-color), 0.3);
+}
+
+.switch.active {
+  background: rgba(var(--active-color), 0.35);
+}
+
+.switch .switch-disc {
+  top: 0;
+  left: 0;
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: rgb(var(--text-color));
+  transform: translateY(-2px);
+  transition-duration: 0.2s;
+}
+
+.switch.active .switch-disc {
+  background: rgb(var(--active-color));
+  left: 16px;
+}

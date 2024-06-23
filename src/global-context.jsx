@@ -16,7 +16,7 @@ function GlobalContext() {
   useEffect(() => {
     axiosCustom.get('/user').then((res) => {
       if (res.data) {
-        setUser({ login: res.data });
+        setUser({ login: res.data.login, id: res.data.id });
       } else {
         setUser({});
       }

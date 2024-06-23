@@ -1,9 +1,9 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "../global-context";
-import { NavLink, useNavigate } from "react-router-dom";
-import axiosCustom from "../tools/axiosCustom";
-import { toast } from "react-toastify";
-import "../assets/css/login.css";
+import { useContext, useState } from 'react';
+import { AuthContext } from '../global-context';
+import { NavLink, useNavigate } from 'react-router-dom';
+import axiosCustom from '../tools/axiosCustom';
+import { toast } from 'react-toastify';
+import '../assets/css/login.css';
 
 function Register() {
   const navigate = useNavigate();
@@ -17,38 +17,36 @@ function Register() {
     }
 
     const formData = new FormData(e.target);
-    const username = formData.get("username");
-    const password = formData.get("password");
-    const email = formData.get("email");
+    const username = formData.get('username');
+    const password = formData.get('password');
+    const email = formData.get('email');
 
-    const toastId = toast.loading("Enregistrement");
+    const toastId = toast.loading('Enregistrement');
     setLock(true);
 
     try {
-      await axiosCustom.post("/user/register", {
+      const res = await axiosCustom.post('/user/register', {
         username,
         password,
-        email,
+        email
       });
-      setUser({ login: username });
+      setUser(res.data);
       toast.update(toastId, {
-        type: "success",
-        render: "Enregistrement réussi",
+        type: 'success',
+        render: 'Enregistrement réussi',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      navigate('/');
     } catch (error) {
-      console.error("Login failed", error);
+      console.error('Login failed', error);
       toast.update(toastId, {
-        type: "error",
-        render: "Enregistrement échoué",
+        type: 'error',
+        render: 'Enregistrement échoué',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
     } finally {
       setTimeout(() => setLock(false), 500);

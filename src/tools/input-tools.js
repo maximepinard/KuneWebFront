@@ -1,5 +1,5 @@
 export function convertTimeToInteger(timeString) {
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  const [hours, minutes, seconds] = timeString.split(":").map(Number);
   const totalSeconds = hours * 3600 + minutes * 60 + seconds;
   return totalSeconds;
 }
@@ -10,29 +10,33 @@ export function convertIntegerToTime(totalSeconds) {
   const seconds = totalSeconds % 60;
 
   // Ensure each component is two digits
-  const formattedHours = String(hours).padStart(2, '0');
-  const formattedMinutes = String(minutes).padStart(2, '0');
-  const formattedSeconds = String(seconds).padStart(2, '0');
+  const formattedHours = String(hours).padStart(2, "0");
+  const formattedMinutes = String(minutes).padStart(2, "0");
+  const formattedSeconds = String(seconds).padStart(2, "0");
 
   return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
 
-export function extractCodeFromYoutubeUrl(url) {
-  // Regular expression to match YouTube watch URL and extract the 'v' parameter
-  const youtubeRegex =
-    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|.+\?v=)?([^&\s]+)/;
-  const match = url.match(youtubeRegex);
+export function extractParamFromUrl(url) {
+  try {
+    const urlObj = new URL(url);
+    const urlParams = new URLSearchParams(urlObj.search);
+    const paramsObject = {};
 
-  if (match && match[1]) {
-    // If the URL is a YouTube URL and the 'v' parameter is found, return the video ID
-    return match[1];
-  } else {
-    // If it's not a YouTube URL, return the original string
+    for (const [key, value] of urlParams.entries()) {
+      paramsObject[key] = value;
+    }
+    return paramsObject;
+  } catch (e) {
     return url;
   }
 }
 
-export function getMax16by9Dimensions(element = null, widthOffset = 0, heightOffset = 0) {
+export function getMax16by9Dimensions(
+  element = null,
+  widthOffset = 0,
+  heightOffset = 0,
+) {
   let width, height;
 
   if (element) {
@@ -59,16 +63,16 @@ export function getMax16by9Dimensions(element = null, widthOffset = 0, heightOff
 
   return {
     width: maxWidth,
-    height: maxHeight
+    height: maxHeight,
   };
 }
 
 export function getMedia() {
   if (window.innerWidth >= 1280) {
-    return 'pc';
+    return "pc";
   }
   if (window.innerWidth >= 768) {
-    return 'tablet';
+    return "tablet";
   }
-  return 'mobile';
+  return "mobile";
 }

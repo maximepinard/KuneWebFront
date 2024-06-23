@@ -1,0 +1,29 @@
+#pixelGuess {
+  overflow: hidden;
+}
+
+#pixelGuess > #block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: url(#pixelate);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(/guess_img/Arnold.jpg);
+  overflow: hidden;
+}
+
+#pixelGuess > #block {
+  position: relative;
+  margin: auto;
+  overflow: hidden;
+}
+
+.inside {
+  position: relative;
+  visibility: hidden;
+}

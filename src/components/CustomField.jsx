@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import Switch from './switch';
 
-function CustomField({ data, setData, field, debounce }) {
+function CustomField({ data, setData, field, debounce, disabled = false }) {
   const [localValue, setLocalValue] = useState(getData(data, field));
   // Define the common props for the input element
   const inputProps = {
@@ -9,7 +10,8 @@ function CustomField({ data, setData, field, debounce }) {
     placeholder: field.placeholder,
     type: field.type,
     step: field?.step,
-    onChange: (e) => outPutData(e, data, field, setData, setLocalValue)
+    onChange: (e) => !disabled && outPutData(e, data, field, setData, setLocalValue),
+    disabled: disabled
   };
 
   if (field.InputType === 'label-group') {
@@ -19,6 +21,17 @@ function CustomField({ data, setData, field, debounce }) {
       </div>
     );
   }
+
+  if (field.type === 'switch') {
+    return (
+      <Switch
+        {...inputProps}
+        value={getData(data, field)}
+        setValue={() => !disabled && setData({ ...data, [field.name]: !data[field.name] })}
+      />
+    );
+  }
+
   if (field.isValueOnlyDefault) {
     return <input {...inputProps} defaultValue={getData(data, field) ?? ''} />;
   }

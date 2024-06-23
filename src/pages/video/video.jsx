@@ -7,10 +7,16 @@ import AddIcon from '../../assets/svg/add-icon';
 import EditVideo from '../../components/edit-video';
 import axiosCustom from '../../tools/axiosCustom';
 import { toast } from 'react-toastify';
+import { extractParamFromUrl, getMedia } from '../../tools/input-tools';
+import KuneTable from '../../components/kune-table';
+import ImportIcon from '../../assets/svg/import-icon';
 
 function VideoList() {
   const [editVideo, setEditVideo] = useState();
+  const [importPlaylist, setImportPlaylist] = useState();
+  const [importSummary, setImportSummary] = useState();
   const { videos, setVideos } = useContext(VideoContext);
+  const media = getMedia();
 
   useEffect(() => {
     axiosCustom
@@ -46,50 +52,152 @@ function VideoList() {
     );
   }
 
+  let columns = [
+    { label: 'Nom', name: 'title' },
+    { label: 'Artist', name: 'artist' },
+    { label: 'Type', name: 'type' },
+    {
+      label: 'Video',
+      render: (item) => (
+        <a href={`https://www.youtube.com/watch?v=${item.code}`} target="_blank">
+          <img src={`https://img.youtube.com/vi/${item.code}/default.jpg`} />
+        </a>
+      ),
+      style: { padding: 0 }
+    },
+    { label: 'Debut', name: 'startGuess' },
+    { label: 'Fin', name: 'endGuess' },
+    {
+      label: 'Actions',
+      name: 'title',
+      render: (item) => displayActions(item),
+      headerRender: () => (
+        <div className="action">
+          Actions
+          <IconButton icon={<AddIcon />} onClick={() => setEditVideo({})} />
+          <IconButton icon={<ImportIcon />} onClick={() => setImportPlaylist({})} />
+        </div>
+      )
+    }
+  ];
+
+  if (media !== 'pc') {
+    columns = columns.filter((c) => !['Debut', 'Fin', 'Code'].includes(c.label));
+  }
+
+  function loadSummary(id) {
+    axiosCustom
+      .get(`/playlists/youtube/${id}`)
+      .then((res) => {
+        setImportSummary(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  function importBulkVideos(videos) {
+    axiosCustom
+      .post(`/videos/addBulk`, videos?.map ? videos.map((v) => ({ title: v.title, code: v.videoId })) : [])
+      .then((res) => {
+        setVideos([...videos, ...res.data]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   return (
     <div id="video" className="basic-page">
-      {editVideo ? (
-        <EditVideo video={editVideo} close={() => setEditVideo()} />
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Artist</th>
-              <th>Code</th>
-              <th>Miniature</th>
-              <th>Debut</th>
-              <th>Fin</th>
-              <th>
-                <div className="action">
-                  Actions
-                  <IconButton icon={<AddIcon />} onClick={() => setEditVideo({})} />
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {videos?.map &&
-              videos.map((vid, i) => (
-                <tr key={i}>
-                  <td>{vid.title}</td>
-                  <td>{vid.artist}</td>
-                  <td>
-                    <a href={`https://www.youtube.com/watch?v=${vid.code}`} target="_blank">
-                      {vid.code}
-                    </a>
-                  </td>
-                  <td style={{ padding: 0 }}>
-                    <img src={`https://img.youtube.com/vi/${vid.code}/default.jpg`} />
-                  </td>
-                  <td>{vid.startGuess}</td>
-                  <td>{vid.endGuess}</td>
-                  <td>{displayActions(vid)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+      {editVideo && <EditVideo video={editVideo} close={() => setEditVideo()} />}
+      {importPlaylist && (
+        <div>
+          <form>
+            <h3>Importer des vidéos depuis une playlist youtube</h3>
+            <div style={{ width: '100%' }}>
+              <label htmlFor="playlistid">URL</label>
+              <input
+                id="playlistid"
+                name="playlistid"
+                placeholder="Playlist youtube à importer"
+                value={importPlaylist && typeof importPlaylist === 'string' ? importPlaylist : ''}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val) {
+                    const params = extractParamFromUrl(val);
+                    console.log(params);
+                    if (params?.list) {
+                      console.log(params.list);
+                      setImportPlaylist(params.list);
+                    }
+                  }
+                }}
+              />
+            </div>
+            <button
+              className="outlined"
+              onClick={(e) => {
+                setImportPlaylist(undefined);
+                e.preventDefault();
+              }}
+            >
+              Annuler
+            </button>
+            <button
+              onClick={(e) => {
+                loadSummary(importPlaylist);
+                setImportPlaylist(undefined);
+                setImportSummary([]);
+                e.preventDefault();
+              }}
+            >
+              Importer
+            </button>
+          </form>
+        </div>
       )}
+      {importSummary && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <h2>{`${importSummary.length} vidéos`}</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            {importSummary.map((i) => (
+              <div
+                style={{
+                  width: '20%',
+                  minWidth: '200px',
+                  background: 'rgb(var(--bg-color-2nd))',
+                  borderRadius: '10px',
+                  padding: '1rem'
+                }}
+              >
+                <p>{i.title}</p>
+                <p>
+                  <img src={`https://img.youtube.com/vi/${i.videoId}/default.jpg`} />
+                </p>
+              </div>
+            ))}
+          </div>
+          <button
+            className="outlined"
+            onClick={(e) => {
+              setImportSummary(undefined);
+              e.preventDefault();
+            }}
+          >
+            Annuler
+          </button>
+          <button
+            onClick={(e) => {
+              importBulkVideos(importSummary);
+              setImportSummary(undefined);
+              e.preventDefault();
+            }}
+          >
+            Importer
+          </button>
+        </div>
+      )}
+      {!editVideo && !importPlaylist && !importSummary && <KuneTable rows={videos} columns={columns} />}
     </div>
   );
 }

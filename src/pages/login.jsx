@@ -1,9 +1,9 @@
-import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../global-context";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import axiosCustom from "../tools/axiosCustom";
-import { toast } from "react-toastify";
-import "../assets/css/login.css";
+import { useContext, useState, useEffect } from 'react';
+import { AuthContext } from '../global-context';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import axiosCustom from '../tools/axiosCustom';
+import { toast } from 'react-toastify';
+import '../assets/css/login.css';
 
 function Login() {
   const navigate = useNavigate();
@@ -13,12 +13,12 @@ function Login() {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const expired = searchParams.get("expired");
+    const expired = searchParams.get('expired');
 
-    if (expired === "1") {
+    if (expired === '1') {
       // Set the user to undefined to log them out
-      toast.warn("Session expirée, veuillez vous reconnecter", {
-        toastId: "expired",
+      toast.warn('Session expirée, veuillez vous reconnecter', {
+        toastId: 'expired'
       });
       setUser(undefined);
     }
@@ -30,32 +30,32 @@ function Login() {
       return;
     }
     const formData = new FormData(e.target);
-    const username = formData.get("username");
-    const password = formData.get("password");
-    const toastId = toast.loading("Connexion");
+    const username = formData.get('username');
+    const password = formData.get('password');
+    const toastId = toast.loading('Connexion');
     setLock(true);
     try {
-      await axiosCustom.post("/user/login", {
+      const res = await axiosCustom.post('/user/login', {
         username,
-        password,
+        password
       });
-      setUser({ login: username });
+      setUser(res.data);
       toast.update(toastId, {
-        type: "success",
-        render: "Connexion réussie",
+        type: 'success',
+        render: 'Connexion réussie',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      console.error("Login failed", error);
+      console.error('Login failed', error);
       toast.update(toastId, {
-        type: "error",
-        render: "Connexion échouée",
+        type: 'error',
+        render: 'Connexion échouée',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
     } finally {
       setTimeout(() => setLock(false), 500);

@@ -6,8 +6,8 @@ function SelectingVideo({ videos, addVideo }) {
   }
 
   const options = videos.map((v) => ({
-    id: v.id,
-    label: `${v.title} - ${v.artist}`,
+    id: v?.id,
+    label: `${v.title || ''} - ${v.artist || ''}`,
     image: `https://img.youtube.com/vi/${v.code}/default.jpg`
   }));
 

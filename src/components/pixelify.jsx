@@ -1,52 +1,41 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useState } from 'react';
 
-const Pixelify = ({
-  src,
-  width,
-  height,
-  pixelSize,
-  centered,
-  fillTransparencyColor,
-}) => {
-  const canvasRef = useRef(null);
+const lastPixelSize = { val: -1 };
+
+const Pixelify = ({ src, width, height, pixelSize, centered, fillTransparencyColor }) => {
+  const [img, setImg] = useState();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const offscreenCanvas = new OffscreenCanvas(canvas.width, canvas.height);
-    const offscreenCtx = offscreenCanvas.getContext("2d");
-    const ctx = canvas.getContext("2d");
-    let img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = src;
+    const newIMG = new Image();
+    newIMG.crossOrigin = 'anonymous';
+    newIMG.src = src;
+    newIMG.onload = () => {
+      setImg(newIMG);
+    };
+  }, [src]);
 
-    img.onload = () => {
+  useEffect(() => {
+    const canvas = document.getElementById('canvasPixel');
+    if (canvas && pixelSize !== lastPixelSize.val && img) {
+      lastPixelSize.val = pixelSize;
+      const ctx = canvas.getContext('2d');
+      const offscreenCanvas = new OffscreenCanvas(img.width, img.height);
+      const offscreenCtx = offscreenCanvas.getContext('2d');
       pixelSize = parseInt(pixelSize, 10);
       img.width = width ? width : img.width;
       img.height = height ? height : img.height;
       canvas.width = img.width;
       canvas.height = img.height;
-      offscreenCanvas.width = img.width;
-      offscreenCanvas.height = img.height;
       offscreenCtx.drawImage(img, 0, 0, img.width, img.height);
-      paintPixels(
-        offscreenCtx,
-        img,
-        pixelSize,
-        centered,
-        fillTransparencyColor,
-      );
+      console.time('draw');
+      paintPixels(offscreenCtx, img, pixelSize, centered, fillTransparencyColor);
+      console.timeEnd('draw');
+      console.log('pixelSize', pixelSize);
       ctx.drawImage(offscreenCanvas, 0, 0, img.width, img.height);
-      img = null;
-    };
-  }, [src, width, height, pixelSize, centered, fillTransparencyColor]);
+    }
+  }, [img, width, height, pixelSize, centered, fillTransparencyColor, lastPixelSize]);
 
-  const paintPixels = (
-    ctx,
-    img,
-    pixelSize,
-    centered,
-    fillTransparencyColor,
-  ) => {
+  const paintPixels = (offscreenCtx, img, pixelSize, centered, fillTransparencyColor) => {
     if (!isNaN(pixelSize) && pixelSize > 0) {
       for (let x = 0; x < img.width + pixelSize; x += pixelSize) {
         for (let y = 0; y < img.height + pixelSize; y += pixelSize) {
@@ -60,28 +49,26 @@ const Pixelify = ({
             yColorPick = y - (pixelSize - (img.height % pixelSize) / 2) + 1;
           }
 
-          const rgba = ctx.getImageData(xColorPick, yColorPick, 1, 1).data;
-          ctx.fillStyle =
-            rgba[3] === 0
-              ? fillTransparencyColor
-              : `rgba(${rgba[0]},${rgba[1]},${rgba[2]},${rgba[3]})`;
+          const rgba = offscreenCtx.getImageData(xColorPick, yColorPick, 1, 1).data;
+          offscreenCtx.fillStyle =
+            rgba[3] === 0 ? fillTransparencyColor : `rgba(${rgba[0]},${rgba[1]},${rgba[2]},${rgba[3]})`;
 
           if (centered) {
-            ctx.fillRect(
+            offscreenCtx.fillRect(
               parseInt(x - (pixelSize - (img.width % pixelSize) / 2), 10),
               parseInt(y - (pixelSize - (img.height % pixelSize) / 2), 10),
               pixelSize,
-              pixelSize,
+              pixelSize
             );
           } else {
-            ctx.fillRect(x, y, pixelSize, pixelSize);
+            offscreenCtx.fillRect(x, y, pixelSize, pixelSize);
           }
         }
       }
     }
   };
 
-  return <canvas ref={canvasRef} />;
+  return <canvas id="canvasPixel" />;
 };
 
 export default Pixelify;

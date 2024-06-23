@@ -7,6 +7,7 @@ button.icon {
   box-shadow: none !important;
   padding: 0;
   color: inherit;
+  min-width: 36px;
 }
 
 button.icon:hover {

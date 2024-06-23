@@ -16,7 +16,7 @@ const PlayerState = {
   CUED: 5
 };
 
-function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width = 680, height = 360 }) {
+function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width = 680, height = 360, conf }) {
   const [currentVideo, setCurrentVideo] = useState();
   const [playerState, setPlayerState] = useState(PlayerState.UNSTARTED);
   const [isReady, setReady] = useState(false);
@@ -118,7 +118,7 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
           <YoutubePlayer />
           {video?.show && (
             <div style={{ display: 'flex', justifyContent: 'center', margin: 'auto', zoom: 1.8 }}>
-              <h2 style={{ margin: 'auto' }}>{`${video.artist} - ${video.title}`}</h2>
+              <h2 style={{ margin: 'auto' }}>{`${video.artist || ''} - ${video.title || ''}`}</h2>
             </div>
           )}
         </div>
@@ -129,8 +129,8 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
               total={video?.end}
               start={video?.start}
               player={player}
-              type={video?.type}
-              year={video?.date}
+              type={conf?.type && video?.type ? video?.type : undefined}
+              year={conf?.year && video?.date ? video?.date : undefined}
               size={width ? width / 680 : 680}
             />
           </div>
