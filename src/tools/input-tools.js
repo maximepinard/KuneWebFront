@@ -62,3 +62,13 @@ export function getMax16by9Dimensions(element = null, widthOffset = 0, heightOff
     height: maxHeight
   };
 }
+
+export function getMedia() {
+  if (window.innerWidth >= 1280) {
+    return 'pc';
+  }
+  if (window.innerWidth >= 768) {
+    return 'tablet';
+  }
+  return 'mobile';
+}
