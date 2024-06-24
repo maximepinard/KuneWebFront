@@ -1,12 +1,12 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 import axiosCustom from '../tools/axiosCustom';
 import { VideoContext } from '../global-context';
 import IconButton from './icon-button';
 import SelectingVideo from './select-video';
 import DeleteIcon from '../assets/svg/delete-icon';
-import '../assets/css/edit.css';
 import CustomField from './CustomField';
+import '../assets/css/edit.css';
 
 const inputFields = [
   {
@@ -90,6 +90,28 @@ function EditPlaylist({ playlist, videos, close }) {
     }
   }
 
+  const dragItem = useRef();
+  const dragOverItem = useRef();
+
+  const handleDragStart = (_e, position) => {
+    dragItem.current = position;
+  };
+
+  const handleDragEnter = (_e, position) => {
+    dragOverItem.current = position;
+  };
+
+  const handleDragEnd = (_e) => {
+    const copyRows = [...videosInPlaylist];
+    const dragItemContent = copyRows[dragItem.current];
+    copyRows.splice(dragItem.current, 1);
+    copyRows.splice(dragOverItem.current, 0, dragItemContent);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    console.log('handleDragEnd');
+    // setRows(copyRows);
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -99,11 +121,19 @@ function EditPlaylist({ playlist, videos, close }) {
             <CustomField field={field} data={editPlaylist} setData={setEditPlaylist} />
           </div>
         ))}
-        <div className="playlist-video-list">
+        <div className="playlist-item-list">
           <div>
             {videosInPlaylist?.map &&
               videosInPlaylist.map((v, i) => (
-                <div key={i} className="video-item">
+                <div
+                  key={i}
+                  className="playlist-item"
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, i)}
+                  onDragEnter={(e) => handleDragEnter(e, i)}
+                  onDragEnd={handleDragEnd}
+                  onDragOver={(e) => e.preventDefault()}
+                >
                   <div>
                     <img src={`https://img.youtube.com/vi/${v.code}/default.jpg`} />
                   </div>
