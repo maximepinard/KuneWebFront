@@ -88,11 +88,13 @@ function ReadPlaylist({ playlist, videos, close }) {
         .get(`/playlists/${playlist?.id}`)
         .then((res) => {
           const array = res.data?.map
-            ? res.data?.map((c) => ({
-                content_id: c.content_id,
-                content_type: c.content_type,
-                content_step: getStepNumber(c.content_id, c.content_type)
-              }))
+            ? res.data
+                ?.sort((c) => c.order_num)
+                ?.map((c) => ({
+                  content_id: c.content_id,
+                  content_type: c.content_type,
+                  content_step: getStepNumber(c.content_id, c.content_type)
+                }))
             : [];
           const randomArray = [...array];
           shuffleArray(randomArray);
