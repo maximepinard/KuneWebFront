@@ -89,7 +89,7 @@ function ReadPlaylist({ playlist, videos, close }) {
         .then((res) => {
           const array = res.data?.map
             ? res.data
-                ?.sort((c) => c.order_num)
+                ?.sort((a, b) => a.order_num - b.order_num)
                 ?.map((c) => ({
                   content_id: c.content_id,
                   content_type: c.content_type,

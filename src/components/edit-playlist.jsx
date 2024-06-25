@@ -27,7 +27,7 @@ function EditPlaylist({ playlist, videos, close }) {
   const getContentInOrder = (contents, vids) => {
     const newContent = [];
     contents
-      .sort((c) => c.order_num)
+      .sort((a, b) => a.order_num - b.order_num)
       .forEach((c, i) => {
         if (c.content_type === 'video') {
           const vid = vids.find((v) => v.id === c.content_id);
@@ -47,7 +47,7 @@ function EditPlaylist({ playlist, videos, close }) {
           setPlaylistContent(
             res.data?.map &&
               res.data
-                ?.sort((c) => c.order_num)
+                ?.sort((a, b) => a.order_num - b.order_num)
                 ?.map((c, i) => ({
                   content_id: c.content_id,
                   content_type: c.content_type,
@@ -118,14 +118,9 @@ function EditPlaylist({ playlist, videos, close }) {
 
   const handleDragEnd = (_e) => {
     const copyRows = [...playlistContent];
+    console.log(copyRows);
     const dragItemContent = copyRows[dragItem.current];
     const dragOverItemContent = copyRows[dragOverItem.current];
-
-    console.log('copyRows', copyRows);
-    console.log('dragItem', dragItem);
-    console.log('dragOverItem', dragOverItem);
-    console.log('dragItemContent', dragItemContent);
-    console.log('dragOverItemContent', dragOverItemContent);
 
     // Swap the order_num properties
     const tempOrder = dragItemContent.order_num;
@@ -133,14 +128,15 @@ function EditPlaylist({ playlist, videos, close }) {
     dragOverItemContent.order_num = tempOrder;
 
     // Update the playlist content with the new order
-    setPlaylistContent([...copyRows]);
+    setPlaylistContent([...copyRows.sort((a, b) => a.order_num - b.order_num)]);
 
     dragItem.current = null;
     dragOverItem.current = null;
   };
 
+  console.log('plalistContent', playlistContent);
+
   const contentsIds = contentInPlaylist?.map((c) => c.content_id);
-  console.log('playlistContent', playlistContent);
 
   return (
     <div>
@@ -155,7 +151,7 @@ function EditPlaylist({ playlist, videos, close }) {
           <div>
             {contentInPlaylist?.map &&
               contentInPlaylist
-                .sort((c) => c.order_num)
+                .sort((a, b) => a.order_num - b.order_num)
                 .map((c, i) => {
                   const v = c.content;
                   return (

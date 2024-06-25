@@ -62,7 +62,6 @@ function MobileGameMenu({ game }) {
 function Root() {
   const { user, setUser, game } = useContext(AuthContext);
   const media = getMedia();
-  console.log('media', media);
 
   function logout() {
     axiosCustom

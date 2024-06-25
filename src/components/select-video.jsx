@@ -5,8 +5,6 @@ function SelectingVideo({ videos, addVideo }) {
     addVideo(parseInt(value));
   }
 
-  console.log('videos', videos);
-
   const options = videos.map((v) => ({
     id: v?.id,
     label: `${v.title} - ${v.artist}`,
