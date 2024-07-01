@@ -9,9 +9,12 @@ import axiosCustom from '../../tools/axiosCustom';
 import { toast } from 'react-toastify';
 import { getMedia } from '../../tools/input-tools';
 import KuneTable from '../../components/kune-table';
+import ImportIcon from '../../assets/svg/import-icon';
 
 function VideoList() {
   const [editVideo, setEditVideo] = useState();
+  const [importPlaylist, setImportPlaylist] = useState();
+  const [importSummary, setImportSummary] = useState();
   const { videos, setVideos } = useContext(VideoContext);
   const media = getMedia();
 
@@ -75,6 +78,7 @@ function VideoList() {
         <div className="action">
           Actions
           <IconButton icon={<AddIcon />} onClick={() => setEditVideo({})} />
+          <IconButton icon={<ImportIcon />} onClick={() => setImportPlaylist({})} />
         </div>
       )
     }
@@ -84,13 +88,111 @@ function VideoList() {
     columns = columns.filter((c) => !['Debut', 'Fin', 'Code'].includes(c.label));
   }
 
+  function loadSummary(id) {
+    axiosCustom
+      .get(`/playlists/youtube/${id}`)
+      .then((res) => {
+        setImportSummary(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  function importBulkVideos(videos) {
+    axiosCustom
+      .post(
+        `/videos/addBulk`,
+        videos.map((v) => ({ title: v.title, code: v.videoId }))
+      )
+      .then((res) => {
+        setVideos([...videos, ...res.data]);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   return (
     <div id="video" className="basic-page">
-      {editVideo ? (
-        <EditVideo video={editVideo} close={() => setEditVideo()} />
-      ) : (
-        <KuneTable rows={videos} columns={columns} />
+      {editVideo && <EditVideo video={editVideo} close={() => setEditVideo()} />}
+      {importPlaylist && (
+        <div>
+          <form>
+            <h3>Importer des vidéos depuis une playlist youtube</h3>
+            <div style={{ width: '100%' }}>
+              <label htmlFor="playlistid">URL</label>
+              <input
+                id="playlistid"
+                name="playlistid"
+                placeholder="Playlist youtube à importer"
+                onChange={(e) => setImportPlaylist(e.target.value)}
+              />
+            </div>
+            <button
+              className="outlined"
+              onClick={(e) => {
+                setImportPlaylist(undefined);
+                e.preventDefault();
+              }}
+            >
+              Annuler
+            </button>
+            <button
+              onClick={(e) => {
+                loadSummary(importPlaylist);
+                setImportPlaylist(undefined);
+                setImportSummary([]);
+                e.preventDefault();
+              }}
+            >
+              Importer
+            </button>
+          </form>
+        </div>
       )}
+      {importSummary && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <h2>{`${importSummary.length} vidéos`}</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+            {importSummary.map((i) => (
+              <div
+                style={{
+                  width: '20%',
+                  minWidth: '200px',
+                  background: 'rgb(var(--bg-color-2nd))',
+                  borderRadius: '10px',
+                  padding: '1rem'
+                }}
+              >
+                <p>{i.title}</p>
+                <p>
+                  <img src={`https://img.youtube.com/vi/${i.videoId}/default.jpg`} />
+                </p>
+              </div>
+            ))}
+          </div>
+          <button
+            className="outlined"
+            onClick={(e) => {
+              setImportSummary(undefined);
+              e.preventDefault();
+            }}
+          >
+            Annuler
+          </button>
+          <button
+            onClick={(e) => {
+              importBulkVideos(importSummary);
+              setImportSummary(undefined);
+              e.preventDefault();
+            }}
+          >
+            Importer
+          </button>
+        </div>
+      )}
+      {!editVideo && !importPlaylist && !importSummary && <KuneTable rows={videos} columns={columns} />}
     </div>
   );
 }

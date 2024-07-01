@@ -107,8 +107,12 @@ function EditVideo({ video, close }) {
         autoClose: 2000
       });
       if (video?.id) {
-        const newVideos = [...videos].filter((v) => v.id !== video.id);
-        setVideos([...newVideos, res.data]);
+        const newVideos = [...videos];
+        const index = newVideos.findIndex((v) => v.id === video.id);
+        if (index > -1) {
+          newVideos[index] = res.data;
+          setVideos(newVideos);
+        }
       } else {
         setVideos([...videos, res.data]);
       }
