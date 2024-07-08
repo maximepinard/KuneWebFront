@@ -27,10 +27,7 @@ const Pixelify = ({ src, width, height, pixelSize, centered, fillTransparencyCol
       canvas.width = img.width;
       canvas.height = img.height;
       offscreenCtx.drawImage(img, 0, 0, img.width, img.height);
-      console.time('draw');
       paintPixels(offscreenCtx, img, pixelSize, centered, fillTransparencyColor);
-      console.timeEnd('draw');
-      console.log('pixelSize', pixelSize);
       ctx.drawImage(offscreenCanvas, 0, 0, img.width, img.height);
     }
   }, [img, width, height, pixelSize, centered, fillTransparencyColor, lastPixelSize]);

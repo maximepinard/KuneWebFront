@@ -125,9 +125,7 @@ function VideoList() {
                   const val = e.target.value;
                   if (val) {
                     const params = extractParamFromUrl(val);
-                    console.log(params);
                     if (params?.list) {
-                      console.log(params.list);
                       setImportPlaylist(params.list);
                     }
                   }

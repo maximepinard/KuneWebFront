@@ -119,7 +119,6 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
 
   const handleDragEnd = (_e) => {
     const copyRows = [...playlistContent];
-    console.log(copyRows);
     const dragItemContent = copyRows[dragItem.current];
     const dragOverItemContent = copyRows[dragOverItem.current];
 

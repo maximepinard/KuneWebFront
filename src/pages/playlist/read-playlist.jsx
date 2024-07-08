@@ -162,7 +162,7 @@ function ReadPlaylist({ playlist, close }) {
         >{`${Math.min(contentIndex + 1, playlistContent.length)}/${playlistContent.length}`}</div>
       </div>
       {contentIndex === playlistContent?.length ? (
-        <div>
+        <div className="end">
           <h2>FIN</h2>
         </div>
       ) : (

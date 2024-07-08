@@ -19,8 +19,6 @@ function PlayList() {
   const { game, user } = useContext(AuthContext);
   const { playlists, videos, setVideos, setPlaylists } = useContext(VideoContext);
 
-  console.log('playlists', playlists);
-
   useEffect(() => {
     axiosCustom
       .get('/playlists/full')
@@ -114,7 +112,26 @@ function PlayList() {
             <button className={list === 'public' ? 'contained' : 'outlined'} onClick={() => setList('public')}>
               Playlists publiques
             </button>
-            {list === 'public' && <IconButton icon={<PlayIcon />} />}
+            {list === 'public' && (
+              <IconButton
+                icon={<PlayIcon />}
+                onClick={() => {
+                  let count = 0;
+                  const newPlaylist = { name: 'Public', contentPlaylists: [] };
+                  playlists.forEach &&
+                    playlists.forEach((p) => {
+                      p?.contentPlaylists?.sort &&
+                        p.contentPlaylists
+                          ?.sort((a, b) => a.order_num - b.order_num)
+                          ?.forEach((c) => {
+                            newPlaylist.contentPlaylists.push({ ...c, order_num: count });
+                            count++;
+                          });
+                    });
+                  setReadPlaylist(newPlaylist);
+                }}
+              />
+            )}
           </div>
           <KuneTable columns={columns} rows={filteredPlaylists} />
         </>
