@@ -56,7 +56,11 @@ function VideoList() {
     { label: 'Nom', name: 'title' },
     { label: 'Artist', name: 'artist' },
     { label: 'Type', name: 'type' },
-    { label: 'Année', name: 'date', render: (item) => item.date.split('-')[0] },
+    {
+      label: 'Année',
+      name: 'date',
+      render: (item) => (item?.date?.split?.includes('-') ? item?.date?.split('-')[0] : '')
+    },
     {
       label: 'Video',
       render: (item) => (

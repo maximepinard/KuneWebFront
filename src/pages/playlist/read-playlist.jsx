@@ -19,7 +19,19 @@ function ReadPlaylist({ playlist, close }) {
   const [preset, setPreset] = useState(true);
   const [random, setRandom] = useState(false);
   const [videoConf, setVideoConf] = useState({});
-  const playlistContent = random ? randomPlaylistContent : originalPlaylistContent;
+  const [chrono, setChrono] = useState();
+
+  function getPlaylistInOrder() {
+    let r = originalPlaylistContent;
+    if (random) {
+      r = randomPlaylistContent;
+    }
+    if (chrono) {
+    }
+    return r;
+  }
+
+  const playlistContent = getPlaylistInOrder();
 
   function getVideo() {
     if (playlistContent && playlistContent[contentIndex] && playlistContent[contentIndex].video) {
@@ -104,7 +116,16 @@ function ReadPlaylist({ playlist, close }) {
           <h3 style={{ margin: 0 }}>{playlist.name}</h3>
           <div className="section-playlist">
             <div className="section-title">Général</div>
-            <Switch label="Playlist en ordre aléatoire" value={random} setValue={() => setRandom(!random)} />
+            <Switch
+              label="Playlist en ordre aléatoire"
+              value={random}
+              setValue={() => {
+                if (!random) {
+                  setChrono(false);
+                }
+                setRandom(!random);
+              }}
+            />
           </div>
           <div className="section-playlist">
             <div className="section-title">Types</div>
@@ -122,6 +143,9 @@ function ReadPlaylist({ playlist, close }) {
                 value={videoConf?.year}
                 setValue={() => setVideoConf({ ...videoConf, year: !videoConf?.year })}
               />
+              {!random && (
+                <Switch label="Videos dans l'ordre chronologique" value={chrono} setValue={() => setChrono(!chrono)} />
+              )}
             </div>
           </div>
           <div className="section-playlist">
