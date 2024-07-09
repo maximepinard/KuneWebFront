@@ -27,6 +27,22 @@ function ReadPlaylist({ playlist, close }) {
       r = randomPlaylistContent;
     }
     if (chrono) {
+      // Step 1: Extract items with `video` object
+      let sortedItems = r.filter((item) => item.video !== null);
+
+      // Step 2: Sort the extracted items by the `date` field within the `video` object
+      sortedItems.sort((a, b) => new Date(a.video.date) - new Date(b.video.date));
+
+      // Step 3: Reinsert sorted items
+      let resultList = [];
+      for (let item of r) {
+        if (item.video !== null) {
+          resultList.push(sortedItems.shift());
+        } else {
+          resultList.push(item);
+        }
+      }
+      r = resultList;
     }
     return r;
   }
