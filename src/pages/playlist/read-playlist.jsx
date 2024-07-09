@@ -164,7 +164,7 @@ function ReadPlaylist({ playlist, close }) {
               )}
             </div>
           </div>
-          <div className="section-playlist">
+          <div className="section-playlist" style={{ display: 'none' }}>
             <div className="section-title">Rejoindre</div>
             <div style={{ padding: '15px', background: 'white', width: 'fit-content' }}>
               <QRCode
