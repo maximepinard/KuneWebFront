@@ -143,7 +143,7 @@ function ReadPlaylist({ playlist, close }) {
               }}
             />
           </div>
-          <div className="section-playlist">
+          <div className="section-playlist" style={{ display: 'none' }}>
             <div className="section-title">Types</div>
           </div>
           <div className="section-playlist">
