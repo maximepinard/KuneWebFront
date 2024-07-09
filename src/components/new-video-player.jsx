@@ -144,7 +144,8 @@ function NewVideoPlayer({ video, getPrevious, getNext, noControls = false, width
           alignItems: 'center',
           justifyContent: 'center',
           zoom: 1.8,
-          zIndex: 13
+          zIndex: 13,
+          position: 'relative'
         }}
       >
         {/*<label>
