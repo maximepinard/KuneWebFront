@@ -22,20 +22,20 @@ function ReadPlaylist({ playlist, close }) {
   const playlistContent = random ? randomPlaylistContent : originalPlaylistContent;
 
   function getVideo() {
-    if (playlistContent && playlistContent[contentIndex]) {
+    if (playlistContent && playlistContent[contentIndex] && playlistContent[contentIndex].video) {
       const vid = playlistContent[contentIndex].video;
       if (currentStep === 1) {
         return {
           ...vid,
-          start: vid.startReveal,
-          end: vid.endReveal,
+          start: vid?.startReveal,
+          end: vid?.endReveal,
           show: true
         };
       }
       return {
         ...vid,
-        start: vid.startGuess,
-        end: vid.endGuess
+        start: vid?.startGuess,
+        end: vid?.endGuess
       };
     }
     return null;
