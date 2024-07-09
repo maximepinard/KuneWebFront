@@ -138,6 +138,26 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
 
   function displayVideo(content, i) {
     const video = content.video;
+    if (!video) {
+      return (
+        <div key={i} className="playlist-item">
+          <div>error</div>
+          {!readOnly && (
+            <IconButton
+              icon={<DeleteIcon />}
+              onClick={(e) => {
+                setPlaylistContent(
+                  [...playlistContent].filter(
+                    (c) => c.content_id !== content.content_id || c.content_type !== content.content_type
+                  )
+                );
+                e.preventDefault();
+              }}
+            />
+          )}
+        </div>
+      );
+    }
     return (
       <div
         key={i}
