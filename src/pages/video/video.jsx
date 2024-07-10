@@ -108,12 +108,12 @@ function VideoList() {
       .then((res) => {
         const newVideoList = [...videos];
         res.data.forEach((v) => newVideoList.push(v));
-        console.log('res.data', res.data);
-        console.log('newVideoList', newVideoList);
         setVideos(newVideoList);
+        toast.success('Vidéos Importées');
       })
       .catch((err) => {
         console.error(err);
+        toast.error("Erreur lors de l'import");
       });
   }
 
