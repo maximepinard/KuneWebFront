@@ -106,7 +106,11 @@ function VideoList() {
     axiosCustom
       .post(`/videos/addBulk`, _videos?.map ? _videos.map((v) => ({ title: v.title, code: v.videoId })) : [])
       .then((res) => {
-        setVideos([...videos, ...res.data]);
+        const newVideoList = [...videos];
+        res.data.forEach((v) => newVideoList.push(v));
+        console.log('res.data', res.data);
+        console.log('newVideoList', newVideoList);
+        setVideos(newVideoList);
       })
       .catch((err) => {
         console.error(err);
