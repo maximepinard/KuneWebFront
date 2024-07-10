@@ -102,9 +102,9 @@ function VideoList() {
       });
   }
 
-  function importBulkVideos(videos) {
+  function importBulkVideos(_videos) {
     axiosCustom
-      .post(`/videos/addBulk`, videos?.map ? videos.map((v) => ({ title: v.title, code: v.videoId })) : [])
+      .post(`/videos/addBulk`, _videos?.map ? _videos.map((v) => ({ title: v.title, code: v.videoId })) : [])
       .then((res) => {
         setVideos([...videos, ...res.data]);
       })
