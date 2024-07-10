@@ -60,7 +60,7 @@ function VideoList() {
       label: 'Année',
       name: 'date',
       render: (item) =>
-        item?.date?.split?.includes && item?.date?.split?.includes('-') ? item?.date?.split('-')[0] : ''
+        item?.date?.includes && item?.date?.includes('-') && item.date.split ? item?.date?.split('-')[0] : ''
     },
     {
       label: 'Video',
