@@ -205,7 +205,11 @@ function VideoList() {
           </button>
         </div>
       )}
-      {!editVideo && !importPlaylist && !importSummary && <KuneTable rows={videos} columns={columns} />}
+      {!editVideo && !importPlaylist && !importSummary && (
+        <div className="table-wrapper">
+          <KuneTable rows={videos} columns={columns} />
+        </div>
+      )}
     </div>
   );
 }
