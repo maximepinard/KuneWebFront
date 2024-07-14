@@ -9,10 +9,12 @@ function KuneTable({ rows, columns, setSelectedRows, selectedRows, select }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleRowSelect = (rowId) => {
-    setSelectedRows((prevSelectedRows) => {
-      const isSelected = prevSelectedRows.includes(rowId);
-      return isSelected ? prevSelectedRows.filter((id) => id !== rowId) : [...prevSelectedRows, rowId];
-    });
+    const isSelected = selectedRows.includes(rowId);
+    if (isSelected) {
+      setSelectedRows(selectedRows.filter((id) => id !== rowId));
+    } else {
+      setSelectedRows([...selectedRows, rowId]);
+    }
   };
 
   const getCellValue = (row, column) => {

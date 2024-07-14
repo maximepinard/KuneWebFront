@@ -6,9 +6,9 @@ import IconButton from './icon-button';
 import SelectingVideo from './select-video';
 import DeleteIcon from '../assets/svg/delete-icon';
 import CustomField from './CustomField';
-import '../assets/css/edit.css';
 import KuneTable from './kune-table';
 import { getVideoColumns } from '../pages/video/video';
+import '../assets/css/edit.css';
 
 const inputFields = [
   {
@@ -43,7 +43,7 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
     return newContent;
   };
 
-  const contentInPlaylist = useMemo(() => getContentInOrder(playlistContent), [playlistContent]);
+  const contentInPlaylist = useMemo(() => getContentInOrder(playlistContent || []), [playlistContent]);
 
   useEffect(() => {
     if (playlist?.id) {
@@ -246,22 +246,24 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
             </div>
           )}
           {mode === 'add' && (
-            <div>
+            <div class="wrapper">
               <KuneTable
                 rows={videos}
                 columns={videoColumns}
                 select
                 selectedRows={contentInPlaylist.map((c) => c.content_id)}
-                setSelectedRows={(ids) =>
+                setSelectedRows={(ids) => {
+                  console.log('ids', ids);
                   setPlaylistContent(
-                    ids.map((id) => ({
-                      content_id: id,
-                      content_type: 'video',
-                      video: videos.find((v) => v.id === id),
-                      order_num: playlistContent.length
-                    }))
-                  )
-                }
+                    ids.map &&
+                      ids.map((id) => ({
+                        content_id: id,
+                        content_type: 'video',
+                        video: videos.find((v) => v.id === id),
+                        order_num: playlistContent.length
+                      }))
+                  );
+                }}
               />
             </div>
           )}
