@@ -8,6 +8,7 @@
   flex: 1 1 0%;
   display: block;
   overflow: auto;
+  position: relative;
 }
 
 .basic-page {

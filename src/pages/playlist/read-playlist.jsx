@@ -6,12 +6,16 @@ import { getMax16by9Dimensions } from '../../tools/input-tools';
 import Switch from '../../components/switch';
 import CancelIcon from '../../assets/svg/cancel-icon';
 import QRCode from 'react-qr-code';
+import { randomString } from '../../tools/random';
 import '../../assets/css/read-playlist.css';
+import BuzzerResponse from '../../components/buzzerResponse';
 
 const url = import.meta.env.VITE_API_URL;
 const protocol = import.meta.env.VITE_API_PROTOCOL;
+const port = ':5173';
 
 function ReadPlaylist({ playlist, close }) {
+  const [gameId, setGameId] = useState(randomString(15));
   const [originalPlaylistContent, setOriginalPlaylistContent] = useState([]);
   const [randomPlaylistContent, setRandomPlaylistContent] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
@@ -164,63 +168,67 @@ function ReadPlaylist({ playlist, close }) {
               )}
             </div>
           </div>
-          <div className="section-playlist" style={{ display: 'none' }}>
+          <div className="section-playlist">
             <div className="section-title">Rejoindre</div>
             <div style={{ padding: '15px', background: 'white', width: 'fit-content' }}>
               <QRCode
-                value={`${protocol}://${url}/buzzer?hash=1550`}
+                value={`${protocol}://${url}${port}/buzzer?hash=${gameId}`}
                 size={Math.min(350, window.innerHeight * 0.8, window.innerWidth * 0.8)}
               />
             </div>
-            <span>{`${protocol}://${url}/buzzer?hash=1550`}</span>
+            <span>{`${protocol}://${url}${port}/buzzer?hash=${gameId}`}</span>
           </div>
           <button onClick={() => setPreset(false)}>LANCER</button>
         </div>
+        <BuzzerResponse gameId={gameId} />
       </div>
     );
   }
 
   return (
-    <div
-      className="playing"
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        position: 'relative',
-        gap: '0.25rem'
-      }}
-    >
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
-        <IconButton
-          icon={<CancelIcon style={{ margin: 0 }} />}
-          onClick={close}
-          style={{ zoom: 1.5, maxWidth: '24px', maxHeight: '24px', minWidth: '24px' }}
-        />
-        <div
-          style={{ zoom: 1.5, zIndex: 99 }}
-        >{`${Math.min(contentIndex + 1, playlistContent.length)}/${playlistContent.length}`}</div>
-      </div>
-      {contentIndex === playlistContent?.length ? (
-        <div className="end">
-          <h2>FIN</h2>
-        </div>
-      ) : (
-        playlistContent &&
-        playlistContent[contentIndex] &&
-        playlistContent[contentIndex].content_type === 'video' && (
-          <NewVideoPlayer
-            video={getVideo()}
-            getPrevious={goPrevious}
-            getNext={goNext}
-            width={width}
-            height={height}
-            conf={videoConf}
+    <>
+      <div
+        className="playing"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          position: 'relative',
+          gap: '0.25rem'
+        }}
+      >
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+          <IconButton
+            icon={<CancelIcon style={{ margin: 0 }} />}
+            onClick={close}
+            style={{ zoom: 1.5, maxWidth: '24px', maxHeight: '24px', minWidth: '24px' }}
           />
-        )
-      )}
-      <div />
-    </div>
+          <div
+            style={{ zoom: 1.5, zIndex: 99 }}
+          >{`${Math.min(contentIndex + 1, playlistContent.length)}/${playlistContent.length}`}</div>
+        </div>
+        {contentIndex === playlistContent?.length ? (
+          <div className="end">
+            <h2>FIN</h2>
+          </div>
+        ) : (
+          playlistContent &&
+          playlistContent[contentIndex] &&
+          playlistContent[contentIndex].content_type === 'video' && (
+            <NewVideoPlayer
+              video={getVideo()}
+              getPrevious={goPrevious}
+              getNext={goNext}
+              width={width}
+              height={height}
+              conf={videoConf}
+            />
+          )
+        )}
+        <div />
+      </div>
+      <BuzzerResponse gameId={gameId} />
+    </>
   );
 }
 

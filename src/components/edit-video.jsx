@@ -1,30 +1,26 @@
-import { useState, useContext } from "react";
-import { toast } from "react-toastify";
-import axiosCustom from "../tools/axiosCustom";
-import { VideoContext } from "../global-context";
-import CustomField from "./CustomField";
-import {
-  convertIntegerToTime,
-  convertTimeToInteger,
-  extractParamFromUrl,
-} from "../tools/input-tools";
-import NewVideoPlayer from "./new-video-player";
+import { useState, useContext } from 'react';
+import { toast } from 'react-toastify';
+import axiosCustom from '../tools/axiosCustom';
+import { VideoContext } from '../global-context';
+import CustomField from './CustomField';
+import { convertIntegerToTime, convertTimeToInteger, extractParamFromUrl } from '../tools/input-tools';
+import NewVideoPlayer from './new-video-player';
 
-import "../assets/css/edit.css";
+import '../assets/css/edit.css';
 
 const getInputFields = () => [
-  { name: "title", label: "Title", placeholder: "Entrer titre", type: "text" },
+  { name: 'title', label: 'Title', placeholder: 'Entrer titre', type: 'text' },
   {
-    name: "artist",
-    label: "Artist",
+    name: 'artist',
+    label: 'Artist',
     placeholder: `Nom de l'artist`,
-    type: "text",
+    type: 'text'
   },
   {
-    name: "code",
-    label: "Code",
-    placeholder: "Entrer code",
-    type: "text",
+    name: 'code',
+    label: 'Code',
+    placeholder: 'Entrer code',
+    type: 'text',
     formatOutput: (val) => {
       const res = extractParamFromUrl(val);
       if (res?.v) {
@@ -32,77 +28,87 @@ const getInputFields = () => [
       } else {
         return val;
       }
-    },
+    }
   },
   {
-    name: "date",
-    label: "Date",
-    placeholder: "Date du média",
-    type: "date",
+    name: 'date',
+    label: 'Date',
+    placeholder: 'Date du média',
+    type: 'date'
   },
   {
-    InputType: "label-group",
-    title: "Deviner",
+    InputType: 'label-group',
+    title: 'Deviner'
   },
   {
-    name: "startGuess",
-    label: "De",
-    placeholder: "Timestamp en s",
-    type: "time",
+    name: 'startGuess',
+    label: 'De',
+    placeholder: 'Timestamp en s',
+    type: 'time',
     step: 1,
     isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
-    formatOutput: convertTimeToInteger,
+    formatOutput: convertTimeToInteger
   },
   {
-    name: "endGuess",
-    label: "À",
-    placeholder: "Timestamp en s",
-    type: "time",
+    name: 'endGuess',
+    label: 'À',
+    placeholder: 'Timestamp en s',
+    type: 'time',
     step: 1,
     isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
-    formatOutput: convertTimeToInteger,
+    formatOutput: convertTimeToInteger
   },
   {
-    InputType: "label-group",
-    title: "Révéler",
+    InputType: 'label-group',
+    title: 'Révéler'
   },
   {
-    name: "startReveal",
-    label: "De",
-    placeholder: "Timestamp en s",
-    type: "time",
+    name: 'startReveal',
+    label: 'De',
+    placeholder: 'Timestamp en s',
+    type: 'time',
     step: 1,
     isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
-    formatOutput: convertTimeToInteger,
+    formatOutput: convertTimeToInteger
   },
   {
-    name: "endReveal",
-    label: "À",
-    placeholder: "Timestamp en s",
-    type: "time",
+    name: 'endReveal',
+    label: 'À',
+    placeholder: 'Timestamp en s',
+    type: 'time',
     step: 1,
     isValueOnlyDefault: true,
     formatInput: convertIntegerToTime,
-    formatOutput: convertTimeToInteger,
+    formatOutput: convertTimeToInteger
   },
   {
-    name: "type",
-    label: "Type",
-    placeholder: "Type de média",
-    type: "select",
-    options: [],
-  },
+    name: 'type',
+    label: 'Type',
+    placeholder: 'Type de média',
+    type: 'select',
+    options: []
+  }
 ];
+
+const defaultVideo = {
+  startGuess: 0,
+  endGuess: 10,
+  startReveal: 11,
+  endReveal: 20,
+  date: new Date().toISOString(),
+  type: 'musique'
+};
 
 function EditVideo({ video, close }) {
   const { videos, setVideos } = useContext(VideoContext);
-  const [editVideo, setEditVideo] = useState({ ...video });
+  const [editVideo, setEditVideo] = useState(video?.id ? { ...video } : defaultVideo);
   const [previewVideo, setPreviewVideo] = useState({ ...video });
   const [preview, setPreview] = useState(0);
   const [lock, setLock] = useState();
+  console.log(editVideo);
 
   async function onSubmit(e) {
     e.preventDefault(); // Prevent the default form submission
@@ -111,19 +117,17 @@ function EditVideo({ video, close }) {
     }
 
     setLock(true);
-    const toastId = toast.loading("Enregistrement");
+    const toastId = toast.loading('Enregistrement');
     const axiosMethod = (body) =>
-      video?.id
-        ? axiosCustom.patch(`/videos/${video.id}`, body)
-        : axiosCustom.post(`/videos`, body);
+      video?.id ? axiosCustom.patch(`/videos/${video.id}`, body) : axiosCustom.post(`/videos`, body);
     try {
       const res = await axiosMethod(editVideo);
       toast.update(toastId, {
-        type: "success",
-        render: "Réussi",
+        type: 'success',
+        render: 'Réussi',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
       if (video?.id) {
         const newVideos = [...videos];
@@ -140,11 +144,11 @@ function EditVideo({ video, close }) {
     } catch (error) {
       console.error(error);
       toast.update(toastId, {
-        type: "error",
-        render: "Échoué",
+        type: 'error',
+        render: 'Échoué',
         isLoading: false,
         closeOnClick: true,
-        autoClose: 2000,
+        autoClose: 2000
       });
     } finally {
       setTimeout(() => setLock(false), 500);
@@ -157,14 +161,14 @@ function EditVideo({ video, close }) {
         ...editVideo,
         start: editVideo.startGuess,
         end: editVideo.endGuess,
-        show: false,
+        show: false
       });
     } else {
       setPreviewVideo({
         ...editVideo,
         start: editVideo.startReveal,
         end: editVideo.endReveal,
-        show: true,
+        show: true
       });
     }
   }
@@ -175,14 +179,14 @@ function EditVideo({ video, close }) {
         ...editVideo,
         start: editVideo.startGuess,
         end: editVideo.endGuess,
-        show: false,
+        show: false
       });
     } else {
       setPreviewVideo({
         ...editVideo,
         start: editVideo.startReveal,
         end: editVideo.endReveal,
-        show: true,
+        show: true
       });
     }
   }
@@ -193,11 +197,7 @@ function EditVideo({ video, close }) {
         {getInputFields().map((field, index) => (
           <div key={index}>
             {field.label && <label htmlFor={field.name}>{field.label}</label>}
-            <CustomField
-              field={field}
-              data={editVideo}
-              setData={setEditVideo}
-            />
+            <CustomField field={field} data={editVideo} setData={setEditVideo} />
           </div>
         ))}
         <div className="form-actions">
@@ -217,14 +217,14 @@ function EditVideo({ video, close }) {
                 ...editVideo,
                 start: editVideo.startGuess,
                 end: editVideo.endGuess,
-                show: false,
+                show: false
               });
             }}
           >
-            {!preview ? "Previsualiser" : "Stop"}
+            {!preview ? 'Previsualiser' : 'Stop'}
           </button>
           {editVideo && editVideo.code && Boolean(preview) && (
-            <div style={{ width: 640, height: 360, paddingBottom: "4rem" }}>
+            <div style={{ width: 640, height: 360, paddingBottom: '4rem' }}>
               <NewVideoPlayer
                 video={previewVideo}
                 getNext={handleNext}
