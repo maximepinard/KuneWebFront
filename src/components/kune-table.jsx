@@ -55,7 +55,7 @@ function KuneTable({ rows, columns, setSelectedRows, selectedRows, select }) {
 
   return (
     <div>
-      <form style={{ margin: 0, marginBottom: '2px' }}>
+      <form style={{ margin: '1px', marginBottom: '2px' }}>
         <input
           type="text"
           placeholder="Recherche..."
