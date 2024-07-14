@@ -37,4 +37,5 @@ thead tr th {
   position: sticky;
   top: 0;
   background: rgb(var(--table-color));
+  z-index: 2;
 }
