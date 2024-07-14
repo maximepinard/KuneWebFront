@@ -11,6 +11,46 @@ import { extractParamFromUrl, getMedia } from '../../tools/input-tools';
 import KuneTable from '../../components/kune-table';
 import ImportIcon from '../../assets/svg/import-icon';
 
+export const getVideoColumns = (setEditVideo, setImportPlaylist, displayActions) => {
+  const cols = [
+    { label: 'Nom', name: 'title' },
+    { label: 'Artist', name: 'artist' },
+    { label: 'Type', name: 'type' },
+    {
+      label: 'Année',
+      name: 'date',
+      render: (item) =>
+        item?.date?.includes && item?.date?.includes('-') && item.date.split ? item?.date?.split('-')[0] : ''
+    },
+    {
+      label: 'Video',
+      render: (item) => (
+        <a href={`https://www.youtube.com/watch?v=${item.code}`} target="_blank">
+          <img src={`https://img.youtube.com/vi/${item.code}/default.jpg`} />
+        </a>
+      ),
+      style: { padding: 0 }
+    },
+    { label: 'Debut', name: 'startGuess' },
+    { label: 'Fin', name: 'endGuess' }
+  ];
+  if (displayActions) {
+    cols.push({
+      label: 'Actions',
+      name: 'title',
+      render: (item) => displayActions(item),
+      headerRender: () => (
+        <div className="action">
+          Actions
+          <IconButton icon={<AddIcon />} onClick={() => setEditVideo({})} />
+          <IconButton icon={<ImportIcon />} onClick={() => setImportPlaylist({})} />
+        </div>
+      )
+    });
+  }
+  return cols;
+};
+
 function VideoList() {
   const [editVideo, setEditVideo] = useState();
   const [importPlaylist, setImportPlaylist] = useState();
@@ -52,43 +92,10 @@ function VideoList() {
     );
   }
 
-  let columns = [
-    { label: 'Nom', name: 'title' },
-    { label: 'Artist', name: 'artist' },
-    { label: 'Type', name: 'type' },
-    {
-      label: 'Année',
-      name: 'date',
-      render: (item) =>
-        item?.date?.includes && item?.date?.includes('-') && item.date.split ? item?.date?.split('-')[0] : ''
-    },
-    {
-      label: 'Video',
-      render: (item) => (
-        <a href={`https://www.youtube.com/watch?v=${item.code}`} target="_blank">
-          <img src={`https://img.youtube.com/vi/${item.code}/default.jpg`} />
-        </a>
-      ),
-      style: { padding: 0 }
-    },
-    { label: 'Debut', name: 'startGuess' },
-    { label: 'Fin', name: 'endGuess' },
-    {
-      label: 'Actions',
-      name: 'title',
-      render: (item) => displayActions(item),
-      headerRender: () => (
-        <div className="action">
-          Actions
-          <IconButton icon={<AddIcon />} onClick={() => setEditVideo({})} />
-          <IconButton icon={<ImportIcon />} onClick={() => setImportPlaylist({})} />
-        </div>
-      )
-    }
-  ];
+  let columns = getVideoColumns(setEditVideo, setImportPlaylist, displayActions);
 
   if (media !== 'pc') {
-    columns = columns.filter((c) => !['Debut', 'Fin', 'Code'].includes(c.label));
+    columns = columns.filter((c) => !['Debut', 'Fin', 'Code', 'Année'].includes(c.label));
   }
 
   function loadSummary(id) {
@@ -117,6 +124,18 @@ function VideoList() {
       });
   }
 
+  function cancel(e) {
+    setImportPlaylist(undefined);
+    e.preventDefault();
+  }
+
+  function confirm(e) {
+    loadSummary(importPlaylist);
+    setImportPlaylist(undefined);
+    setImportSummary([]);
+    e.preventDefault();
+  }
+
   return (
     <div id="video" className="basic-page">
       {editVideo && <EditVideo video={editVideo} close={() => setEditVideo()} />}
@@ -142,25 +161,10 @@ function VideoList() {
                 }}
               />
             </div>
-            <button
-              className="outlined"
-              onClick={(e) => {
-                setImportPlaylist(undefined);
-                e.preventDefault();
-              }}
-            >
+            <button className="outlined" onClick={cancel}>
               Annuler
             </button>
-            <button
-              onClick={(e) => {
-                loadSummary(importPlaylist);
-                setImportPlaylist(undefined);
-                setImportSummary([]);
-                e.preventDefault();
-              }}
-            >
-              Importer
-            </button>
+            <button onClick={confirm}>Importer</button>
           </form>
         </div>
       )}

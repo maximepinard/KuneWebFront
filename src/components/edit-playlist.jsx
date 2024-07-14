@@ -7,6 +7,8 @@ import SelectingVideo from './select-video';
 import DeleteIcon from '../assets/svg/delete-icon';
 import CustomField from './CustomField';
 import '../assets/css/edit.css';
+import KuneTable from './kune-table';
+import { getVideoColumns } from '../pages/video/video';
 
 const inputFields = [
   {
@@ -26,6 +28,7 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
   const { playlists, setPlaylists } = useContext(VideoContext);
   const [editPlaylist, setEditPlaylist] = useState({ ...playlist });
   const [playlistContent, setPlaylistContent] = useState([]);
+  const [mode, setMode] = useState('list');
   const [lock, setLock] = useState();
 
   const getContentInOrder = (contents) => {
@@ -134,8 +137,6 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
     dragOverItem.current = null;
   };
 
-  const contentsIds = contentInPlaylist?.map((c) => c.content_id);
-
   function displayVideo(content, i) {
     const video = content.video;
     if (!video) {
@@ -189,6 +190,35 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
     );
   }
 
+  function handleAddSelection(e) {
+    e.preventDefault();
+    setMode(mode === 'add' ? 'list' : 'add');
+  }
+
+  const videoColumns = getVideoColumns(
+    () => {},
+    () => {},
+    null
+  );
+
+  function handleClose(e) {
+    e.preventDefault();
+    if (mode === 'list') {
+      close(e);
+    } else {
+      setMode('list');
+    }
+  }
+
+  function handleConfirm(e) {
+    e.preventDefault();
+    if (mode === 'list') {
+      onSubmit(e);
+    } else {
+      setMode('list');
+    }
+  }
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -198,39 +228,48 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
             <CustomField field={field} disabled={readOnly} data={editPlaylist} setData={setEditPlaylist} />
           </div>
         ))}
-        <div>{`${contentInPlaylist.length} éléments`}</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+          {`${contentInPlaylist.length} éléments`}
+          <button onClick={handleAddSelection}>Modifier</button>
+        </div>
         <div className="playlist-item-list">
-          <div>
-            {contentInPlaylist?.map &&
-              contentInPlaylist
-                .sort((a, b) => a.order_num - b.order_num)
-                .map((c, i) => {
-                  if (c.content_type === 'video') {
-                    return displayVideo(c, i);
-                  }
-                })}
-            {!readOnly && (
-              <SelectingVideo
-                videos={videos?.filter ? videos.filter((v) => !contentsIds?.includes(v.id)) : []}
-                addVideo={(id) =>
-                  setPlaylistContent([
-                    ...playlistContent,
-                    {
+          {mode === 'list' && (
+            <div className="wrapper">
+              {contentInPlaylist?.map &&
+                contentInPlaylist
+                  .sort((a, b) => a.order_num - b.order_num)
+                  .map((c, i) => {
+                    if (c.content_type === 'video') {
+                      return displayVideo(c, i);
+                    }
+                  })}
+            </div>
+          )}
+          {mode === 'add' && (
+            <div>
+              <KuneTable
+                rows={videos}
+                columns={videoColumns}
+                select
+                selectedRows={contentInPlaylist.map((c) => c.content_id)}
+                setSelectedRows={(ids) =>
+                  setPlaylistContent(
+                    ids.map((id) => ({
                       content_id: id,
                       content_type: 'video',
                       video: videos.find((v) => v.id === id),
                       order_num: playlistContent.length
-                    }
-                  ])
+                    }))
+                  )
                 }
               />
-            )}
-          </div>
+            </div>
+          )}
         </div>
-        <button type="reset" onClick={close}>
+        <button type="reset" onClick={handleClose}>
           Annuler
         </button>
-        <button type="submit" disabled={lock || readOnly}>
+        <button type="submit" onClick={handleConfirm} disabled={lock || readOnly}>
           Sauvegarder
         </button>
       </form>
