@@ -74,7 +74,11 @@ function EditPlaylist({ playlist, videos, close, readOnly = false }) {
     try {
       const res = await axiosMethod({
         ...editPlaylist,
-        playlistContent: playlistContent
+        playlistContent: playlistContent.map((p) => ({
+          content_id: p.content_id,
+          content_type: p.content_type,
+          order_num: p.order_num
+        }))
       });
       toast.update(toastId, {
         type: 'success',
